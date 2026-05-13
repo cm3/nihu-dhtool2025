@@ -36,6 +36,14 @@ Quarto サイトを生成する場合:
 quarto render
 ```
 
+GitHub Pages 用の `gh-pages` ブランチを更新する場合:
+
+```bash
+./scripts/publish_pages.sh
+git push origin main
+git push origin gh-pages
+```
+
 ## Data Notes
 
 - `data/comment_texts.json` は元コメント本文を含むため Git 管理から除外しています。

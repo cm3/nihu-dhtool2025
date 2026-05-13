@@ -4,13 +4,20 @@ title: "kouchou-ai / keyword-curation workflow"
 
 ## Overview
 
-このディレクトリは、CSV 形式のコメントデータを `kouchou-ai` の broad listening
-pipeline にかけた中間出力を起点に、
-[`keyword-curation`](https://keyword-curation.vercel.app/) で人手確認した entity linking 結果を使って、
-エネルギー政策コメントに出てくるエンティティとその関係を整理するための
-作業用ワークフローです。
+このディレクトリは、CSV 形式のコメントデータを `kouchou-ai` の broad listening pipeline にかけた中間出力を起点に、[`keyword-curation`](https://keyword-curation.vercel.app/) で人手確認した entity linking 結果を使って、情報公開請求を行なった第7次エネルギー基本計画（令和7年2月）のパブリックコメントに出てくるエンティティとその関係を整理するための作業用ワークフローです。
 
-成果物は [Pair relation viewer](./pair_relation_viewer.html) で、エンティティ間のネットワークやコメントに基づくエンティティ単位・ペア単位の意見要約をブラウズできるようになっています。
+これまで、私（人間文化研究機構 亀田尭宙）は、千葉大学の石井康平氏と共に[環境政策形成に関する審議会の議事録分析に基づく主題構成比較](https://ipsj.ixsq.nii.ac.jp/records/2006190)などで、`kouchou-ai`と類似したBERTopicを用いた政策形成過程の分析を、議事録、パブコメ、政策文書などの資料について環境政策を対象に行なってきました。
+
+この幅を広げるにあたって、エネルギー政策の政策形成過程に着目した時に、以下のような話題がありました。
+
+- [エネ基パブコメに４．１万件超　過去最多　原発へ「懸念の声」、計画に反映：朝日新聞](https://www.asahi.com/articles/DA3S16152501.html)
+- [エネルギー基本計画のパブリックコメントでAI利用、4000件弱投稿か \- 日本経済新聞](https://www.nikkei.com/article/DGXZQOUA19C490Z10C25A2000000/)
+
+そこで、[公開されているパブリックコメント](https://www.enecho.meti.go.jp/committee/council/basic_policy_subcommittee/opinion/2024_public.html)と別途、情報公開請求で元データを入手し、大量の類似したコメントから、有意義なエンティティとその関係を抽出することを目標にしました。また、`kouchou-ai`のような既存のツールを使ったワークフローにすることで、実務家のワークフローに組み込める形を目指しました。
+
+成果物は [Pair relation viewer](./pair_relation_viewer.html) で、エンティティ間のネットワークやコメントに基づくエンティティ単位・ペア単位の意見要約をブラウズできるようになっています。数が少ないが重要な意見を拾い上げることができているという点で一定の価値があるワークフローを構築できたのではないかと思っています。
+
+今後、学術的な検証や、評価、このワークフローを実務化や他の研究者が容易に利用できるようにするための工夫などに取り組んでいきたいと考えています。
 
 ## Related Repositories
 
@@ -31,8 +38,7 @@ pipeline にかけた中間出力を起点に、
 階層クラスタリングしたときの第 2 階層クラスタにつけられた代表ラベルです。
 個別コメント本文ではなく、複数の argument をまとめた論点カテゴリの短い説明として扱います。
 
-このリポジトリでは、元コメント本文を含む `data/comment_texts.json` はローカル用とし、
-Git 管理から除外しています。
+このリポジトリでは、元コメント本文を含む `data/comment_texts.json` はGit 管理から除外しています。一方、要約、一部引用した元コメントはデータに含まれています。
 
 ## Workflow
 
@@ -168,24 +174,6 @@ python scripts/extract_pair_relations.py --resume
 python scripts/build_pair_relation_viewer.py
 ```
 
-## Execution Order
-
-全体を作り直す場合の目安は次の順序です。
-
-```bash
-# kouchou-ai 側でコメント CSV を broad listening pipeline にかける
-# 以降は pipeline 出力ディレクトリの中間ファイルを使う
-python scripts/prepare_entity_candidates_no_draft.py
-# keyword-curation で data/data.json を確認・修正
-python scripts/refine_entity_descriptions.py --only-weak
-python scripts/build_argument_microclusters.py --threshold 0.7
-python scripts/build_cluster_comment_index.py
-python scripts/discover_property_paths.py
-python scripts/build_entity_graph.py
-python scripts/extract_entity_opinions.py --resume
-python scripts/extract_pair_relations.py --resume
-python scripts/build_pair_relation_viewer.py
-quarto render
-```
+---
 
 LLM を呼ぶ工程では `OPENAI_API_KEY` が必要です。
