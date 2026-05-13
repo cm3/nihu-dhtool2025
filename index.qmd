@@ -21,16 +21,16 @@ title: "広聴AI / keyword-curation ワークフロー"
 
 ## 関連リポジトリ
 
-- [`cm3/nihu-dhtool2025](https://github.com/cm3/nihu-dhtool2025) この説明に加えてスクリプトやデータを含む本リポジトリ。
-- [`digitaldemocracy2030/kouchou-ai`](https://github.com/digitaldemocracy2030/kouchou-ai)
-- [`cm3/keyword-curation`](https://github.com/cm3/keyword-curation)
+- [cm3/nihu-dhtool2025](https://github.com/cm3/nihu-dhtool2025) この説明に加えてスクリプトやデータを含む本リポジトリ。
+- [digitaldemocracy2030/kouchou-ai](https://github.com/digitaldemocracy2030/kouchou-ai) 広聴AIのリポジトリ。
+- [cm3/keyword-curation](https://github.com/cm3/keyword-curation) keyword-curation リポジトリ。[デモページ](https://keyword-curation.vercel.app/)
 
 ## 入力データ
 
 上流の入力は、コメント CSV を広聴AIのレポート生成パイプラインで処理した中間ファイルです。
 このワークフローでは、広聴AIで生成した次のファイルをこのリポジトリの `data/` に配置してから各スクリプトを実行します。
 
-- `data/hierarchical_result.json`: 階層クラスタリング結果。L2 クラスタラベルの入力として使います。
+- `data/hierarchical_result.json`: 階層クラスタリング結果。L2 クラスタラベルと takeaway の入力として使います。
 - `data/hierarchical_clusters.csv`: argument と L1/L2 クラスタ ID の対応。コメント索引作成と局所クラスタの並び合わせに使います。
 - `data/final_result_with_comments.csv`: argument、コメント ID、元コメント本文。コメント索引とローカル本文参照ファイルの作成に使います。
 - `data/embeddings.pkl`: argument embedding。argument の局所クラスタ作成に使います。
@@ -38,6 +38,9 @@ title: "広聴AI / keyword-curation ワークフロー"
 ここでいう **L2 クラスタラベル** は、広聴AIがコメントから抽出した argument を
 階層クラスタリングしたときの第 2 階層クラスタにつけられた代表ラベルです。
 個別コメント本文ではなく、複数の argument をまとめた論点カテゴリの短い説明として扱います。
+**takeaway** は、同じクラスタの要点を文章で要約した補助文脈です。短い L2 クラスタラベルだけでは
+出てこない具体的な技術名や制度名が takeaway に含まれることがあるため、このワークフローでは
+entity linking 候補抽出と人手確認の両方で参照します。
 
 このリポジトリでは、元コメント本文を含む `data/comment_texts.json` はGit 管理から除外しています。一方、要約、一部引用した元コメントはデータに含まれています。
 
@@ -72,7 +75,7 @@ cp /path/to/kouchou-ai/apps/api/broadlistening/pipeline/outputs/<run-id>/final_r
 cp /path/to/kouchou-ai/apps/api/broadlistening/pipeline/outputs/<run-id>/embeddings.pkl data/
 ```
 
-- `data/hierarchical_result.json` は、L2 クラスタラベルを取り出して entity linking 候補生成に使います。
+- `data/hierarchical_result.json` は、L2 クラスタラベルと takeaway を取り出して entity linking 候補生成に使います。
 - `data/hierarchical_clusters.csv` は、各 argument がどの L1/L2 クラスタに属するかを引くために使います。
 - `data/final_result_with_comments.csv` は、argument と元コメント本文、コメント ID を対応付けるために使います。
 - `data/embeddings.pkl` は、argument をより細かい局所クラスタに分けるために使います。
@@ -80,12 +83,13 @@ cp /path/to/kouchou-ai/apps/api/broadlistening/pipeline/outputs/<run-id>/embeddi
 ### 1. Entity linking 候補を作る
 
 `scripts/prepare_entity_candidates_no_draft.py` は、`data/hierarchical_result.json` の
-L2 クラスタラベルから
+L2 クラスタラベルと takeaway から
 Wikidata にリンクできそうな語句を LLM で抽出し、Wikidata Search API の候補から
 最も適切な QID を選びます。
 
-出力は `data/data.json` です。この時点の結果は自動生成なので、
-`keyword-curation` で entity ID、ラベル、説明、リンク要否を人手確認します。
+出力は `data/data.json` です。各 item には L2 クラスタラベルに加えて takeaway も含めます。
+この時点の結果は自動生成なので、`keyword-curation` で takeaway を参照しながら
+entity ID、ラベル、説明、リンク要否を人手確認します。
 
 ```bash
 python scripts/prepare_entity_candidates_no_draft.py

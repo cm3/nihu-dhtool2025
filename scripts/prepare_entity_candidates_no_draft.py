@@ -1,7 +1,7 @@
 """
 Phase A: エンティティリンキング候補生成スクリプト
 
-L2 クラスタラベル（64件）に対して:
+L2 クラスタラベル（64件）と takeaway に対して:
   1. LLM がエンティティ候補メンションを識別
   2. Wikidata Search API で候補QIDを取得
   3. LLM が最適QIDを選択
@@ -38,8 +38,12 @@ WIKIDATA_API = "https://www.wikidata.org/w/api.php"
 WIKIDATA_CACHE: dict[str, list[dict]] = {}
 
 STAGE1_SYSTEM = """\
-エネルギー政策のパブリックコメント分析に使用するカテゴリラベルから、
+エネルギー政策のパブリックコメント分析に使用するカテゴリラベルと takeaway から、
 Wikidata にエンティティとして存在しそうな語句を特定してください。
+
+カテゴリラベルはクラスタの短い代表表現です。takeaway は同じクラスタの要点を
+文章で要約した補助文脈です。ラベルに現れていない具体的な技術名、制度名、
+施策名、事象名が takeaway に含まれている場合は、それも抽出対象にしてください。
 
 対象:
   - 具体的な技術・エネルギー種別（再生可能エネルギー、地熱発電、水素エネルギー等）
@@ -63,6 +67,7 @@ Wikidata にエンティティとして存在しそうな語句を特定して�
 """
 
 STAGE2_SYSTEM = """\
+ラベルテキストと takeaway の文脈を見て、
 Wikidata の候補エンティティから最適なものを選び、
 ラベルテキストを [[QID|表層]] 形式で注釈してください。
 
@@ -157,11 +162,36 @@ def fetch_candidates_for_mentions(mentions: list[dict]) -> list[dict]:
     return enriched
 
 
+def cluster_takeaway(cluster: dict) -> str:
+    """広聴AIの hierarchical_result.json からクラスタ takeaway を取り出す。"""
+    value = cluster.get("takeaway", "")
+    if isinstance(value, str):
+        return value.strip()
+    if isinstance(value, list):
+        return "\n".join(str(v).strip() for v in value if str(v).strip())
+    return str(value).strip() if value is not None else ""
+
+
+def format_cluster_context(label_id: str, label_text: str, takeaway: str) -> str:
+    lines = [
+        f'label_id: "{label_id}"',
+        f'ラベル: "{label_text}"',
+    ]
+    if takeaway:
+        lines.append(f'takeaway: """{takeaway}"""')
+    return "\n".join(lines)
+
+
 def llm_identify_mentions(
-    client: OpenAI, label_id: str, label_text: str, model: str, retries: int = 3
+    client: OpenAI,
+    label_id: str,
+    label_text: str,
+    takeaway: str,
+    model: str,
+    retries: int = 3,
 ) -> list[dict]:
     """Stage 1: LLM でメンション識別"""
-    user_msg = f'label_id: "{label_id}"\nラベル: "{label_text}"'
+    user_msg = format_cluster_context(label_id, label_text, takeaway)
     for attempt in range(retries):
         try:
             resp = client.chat.completions.create(
@@ -187,6 +217,7 @@ def llm_select_qids(
     client: OpenAI,
     label_id: str,
     label_text: str,
+    takeaway: str,
     enriched_mentions: list[dict],
     model: str,
     retries: int = 3,
@@ -207,6 +238,7 @@ def llm_select_qids(
     user_msg = (
         f'label_id: "{label_id}"\n'
         f'ラベル原文: "{label_text}"\n\n'
+        f'takeaway: """{takeaway}"""\n\n'
         f"メンションと候補:\n{mention_block}"
     )
     for attempt in range(retries):
@@ -286,6 +318,7 @@ def main():
     for i, cl in enumerate(clusters):
         label_id = cl["id"]
         label_text = cl["label"]
+        takeaway = cluster_takeaway(cl)
         l1 = cl["parent"]
 
         if label_id in done_ids:
@@ -294,13 +327,17 @@ def main():
 
         print(f"[{i+1:02d}/{len(clusters)}] {label_id} ({l1}): {label_text[:40]}…")
 
-        mentions = llm_identify_mentions(client, label_id, label_text, cli.model)
+        mentions = llm_identify_mentions(
+            client, label_id, label_text, takeaway, cli.model
+        )
         if not mentions:
             print("  → メンションなし")
             continue
 
         enriched = fetch_candidates_for_mentions(mentions)
-        result = llm_select_qids(client, label_id, label_text, enriched, cli.model)
+        result = llm_select_qids(
+            client, label_id, label_text, takeaway, enriched, cli.model
+        )
         links = result.get("links", [])
 
         print(f"  → {len(links)} メンション")
@@ -354,7 +391,14 @@ def main():
     combined = {
         "mentions": final_rows,
         "entities": entities,
-        "items": [{"id": cl["id"], "label": cl["label"]} for cl in clusters],
+        "items": [
+            {
+                "id": cl["id"],
+                "label": cl["label"],
+                "takeaway": cluster_takeaway(cl),
+            }
+            for cl in clusters
+        ],
     }
     cli.output_json.write_text(
         json.dumps(combined, ensure_ascii=False, indent=2), encoding="utf-8"
