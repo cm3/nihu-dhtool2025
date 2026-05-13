@@ -6,21 +6,16 @@ title: "kouchou-ai / keyword-curation workflow"
 
 このディレクトリは、CSV 形式のコメントデータを `kouchou-ai` の broad listening
 pipeline にかけた中間出力を起点に、
-`keyword-curation` で人手確認した entity linking 結果を使って、
+[`keyword-curation`](https://keyword-curation.vercel.app/) で人手確認した entity linking 結果を使って、
 エネルギー政策コメントに出てくるエンティティとその関係を整理するための
 作業用ワークフローです。
 
-主な成果物は次の 3 種類です。
-
-- `data/data.json`: L2 クラスタラベルに対する entity linking 結果
-- `data/entity_graph.json`: エンティティ間の共起・Wikidata 関係グラフ
-- `data/entity_opinions.json` / `data/pair_relations.json`: コメントに基づくエンティティ単位・ペア単位の意見要約
+成果物は [Pair relation viewer](./pair_relation_viewer.html) で、エンティティ間のネットワークやコメントに基づくエンティティ単位・ペア単位の意見要約をブラウズできるようになっています。
 
 ## Related Repositories
 
 - [`digitaldemocracy2030/kouchou-ai`](https://github.com/digitaldemocracy2030/kouchou-ai)
-- `../keyword-curation`
-- `../kouchou-ai`
+- [`cm3/keyword-curation`](https://github.com/cm3/keyword-curation)
 
 ## Input
 
@@ -172,10 +167,6 @@ python scripts/extract_pair_relations.py --resume
 ```bash
 python scripts/build_pair_relation_viewer.py
 ```
-
-## Tools
-
-- [Pair relation viewer](./pair_relation_viewer.html)
 
 ## Execution Order
 
