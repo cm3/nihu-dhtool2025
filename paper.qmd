@@ -1,0 +1,184 @@
+---
+title: "人手確認を前提とした軽量 Entity Linking ワークフロー"
+author: "亀田 尭宙（人間文化研究機構）"
+format:
+  html:
+    toc: true
+---
+
+## Abstract
+
+このノートでは、クラスタ化されたパブリックコメントを出発点として、人手で確認可能な
+Entity Linking 用データセットと、その後段のグラフ生成物を作る軽量ワークフローを説明する。
+LLM による候補生成、小規模なブラウザベースのキュレーションツール、後処理スクリプトを組み合わせるが、
+目的は完全自動化ではない。最終的なデータが人間にとって点検しやすく、編集しやすい状態に留まることを重視する。
+
+## Introduction
+
+このワークフローは、クラスタ化済みのパブリックコメントから出発し、
+人手確認を前提とした Entity Linking 用のコンパクトな JSON を作るものである。
+大規模なアノテーション基盤を構築するのではなく、レビュー対象の画面を小さく保ち、
+中間成果物も人が読める形にしておくことを設計目標とする。
+
+もう一つの目的は、キュレーション UI と後段分析を疎結合に保つことである。
+キュレーション後の `data.json` を手修正済みの主成果物とみなし、
+それ以外のファイルはグラフ分析やレポート用の派生成果物として扱う。
+
+なお、出発点となるコメントデータ自体も単純な一発抽出ではない。
+元 PDF には文字層があるページと画像ページが混在していたため、
+`full-complete.json` は次の三系統を組み合わせて作られている。
+
+- PDF 文字層からの抽出
+- Google Docs OCR 由来 `.docx` からの補完
+- それでも欠ける箇所に対する画像ベースの手動補完
+
+したがって、後段の `comments.csv` や `comments-compressed.csv` は、
+単なる OCR 出力ではなく、異なる抽出経路を統合した comments corpus とみなすのが正確である。
+
+## Workflow
+
+### Candidate generation
+
+`prepare_entity_candidates_no_draft.py` は `hierarchical_result.json` を読み、
+level 2 のクラスタラベルを取り出し、LLM にエンティティ候補となる mention を抽出させる。
+その後 Wikidata を検索して候補を集め、LLM にリンク先エンティティを選ばせる。
+適切な Wikidata 項目が無い場合はローカル項目として残す。
+出力はキュレーションツールと同じスキーマの下書き JSON である。
+
+### Human review with keyword-curation
+
+この下書きを `keyword-curation` に読み込み、人間のレビューアが entity ID、
+confidence、ローカル ID、注記などを編集する。ここで得られる `data.json` を
+キュレーション後データとみなし、以後のスクリプトは原則として LLM の下書きではなく
+この `data.json` を入力として使う。
+
+必要に応じて、この段階で entity の短い説明文も整える。Wikidata 由来の説明は
+日本語が欠けていたり、短文コメントの文脈に対して十分に具体的でない場合があるため、
+`refine_entity_descriptions.py` で日本語の簡潔な説明へ補正してから後段へ渡すことができる。
+
+### Comment compression before downstream processing
+
+元のパブリックコメント書き出しには 3000 件のレコードが含まれていた。
+後段の意見抽出や関係抽出の前に、`scripts/export_kouchou_ai_csv_compressed.py` により
+コメントの圧縮を行っている。
+
+圧縮方法は意図的に単純である。
+
+- `type=comment` のレコードのみを対象にする
+- `type=attachment` は除外する
+- コメント本文には軽い正規化のみを施す
+  - 改行の正規化
+  - 行ごとの空白圧縮
+  - 前後空白の除去
+- 正規化後に完全一致するコメントを同一グループとしてまとめる
+- CSV には各グループの代表 1 行だけを書き、元レコード群の情報は sidecar JSON に保持する
+
+今回の実行では、入力 3000 レコードのうち comment は 2983 件であった。
+attachment 17 件を除くと、分析対象となるコメントは 2983 件である。
+これを正規化後の重複統合により 478 件まで圧縮している。
+つまり、対象コメントの約 16.1% がユニークな正規化コメントとして残り、
+残りは重複グループに吸収されたことになる。
+
+ここでの comments corpus には、抽出由来の異なる行が混在する。
+実際の CSV では `attribute_extraction_source` に由来を残しており、
+主に `pdf_text_layer`, `docx_google_ocr`, `llm_manual_from_image` のような値が入る。
+この provenance を保持しておくことで、後から OCR 起因の欠落や手動補完箇所を追跡しやすくしている。
+
+作業中の点検では、データ整形上のミスも 2 件見つかった。
+1 件は `docx_google_ocr` 由来の `record_id=620224019000000236` で、空本文のまま残っていたものを
+画像確認から補完した。もう 1 件は `record_id=620224019000000069` で、
+`第７次エネ基本計画意見箱へ .pdf 0` という文字列を comment 本文として数えていたが、
+実際には attachment 名の誤抽出だったため attachment に訂正した。
+この 2 件は相殺される形になり、canonical な comments corpus の件数自体は最終的にも 478 件のままである。
+したがって、本稿で参照している現在の `kouchou-ai` 実行も件数ベースでは整合している。
+現時点ではこの補正だけを理由に全体 rerun は行わず、将来の大規模 rerun 時にまとめて反映する方針とする。
+
+### Entity graph construction
+
+キュレーション後の `data.json` からは、主に二つの分析用成果物を作る。
+
+- `discover_property_paths.py`
+  - 同じ item に共起する entity の組について、Wikidata 上で
+    `instance of`、`subclass of`、`part of` などの関係を探索する
+- `build_entity_graph.py`
+  - キュレーション済み entity と、そこで見つかった関係をまとめて
+    `entity_graph.json` に変換する
+
+この二段構成には意味がある。property discovery は外部 API を叩く処理であり、
+一方で graph construction はローカルファイルの高速な変換処理である。
+分けておくことで、中間成果物である TSV を人間が確認・修正しやすくなる。
+
+### Micro-clustering and centroid selection
+
+後段の意見抽出や関係抽出では、LLM に渡すコメント数を減らすため、
+argument の micro-cluster centroid を使っている。ここで使うのは 2 次元可視化座標ではなく、
+元の高次元 embedding である。
+
+具体的には `scripts/build_argument_microclusters.py` が `embeddings.pkl` を読み、
+embedding を L2 正規化し、全 argument 間の Euclidean 距離を計算した上で
+Ward 法による階層クラスタリングを行う。本稿で扱っている設定では、
+距離閾値 0.7 で dendrogram を切り、各 micro-cluster の centroid argument を選んでいる。
+
+### Entity-level opinion extraction and representative comments
+
+`extract_entity_opinions.py` は、キュレーション済み entity ごとに関連コメントを集め、
+LLM によって sentiment、主要論点、entity 間関係を抽出する。
+ここで表示用の representative comments も同時に作るが、
+その選び方は単なる先頭コメントの抜粋ではない。
+
+まず entity の label と surface form に完全一致する箇所を優先的に抜き出す。
+それで十分な例が得られない場合には、entity の説明文とラベルを query とする embedding 検索を挟み、
+関連コメントの中から意味的に近いコメントを補う。
+この段階でも足りない場合のみ、通常の先頭抜粋に fallback する。
+
+この処理は、`CCS付火力発電` に対して本文中の `CCUS` や `CCS` を含むコメントを
+上位に引けるかどうかを小規模に検証した上で導入した。
+したがって、representative comments は表層一致だけに依存しないが、
+同時に alias を確定的に決め打ちしているわけでもない。
+もしこの段階でもより高い正確性が必要なら、embedding により提案された近傍コメントや
+alias 候補自体を追加で人手確認する運用も考えられる。
+
+### Pair relation extraction and connectivity rescue
+
+`extract_pair_relations.py` は、entity-level opinions と `entity_graph.json` をもとに
+有望な entity pair を選び、コメント群から両者の関係説明を生成する。
+pair の優先度は、抽出された relation 数と共起情報にもとづくスコアで決める。
+
+ただし、この閾値選別だけでは、中程度の重要性を持つ local entity が
+最終的な pair graph から脱落し、孤立ノードになりやすい。
+そこで現在の workflow では、閾値以上の pair を採用したあと、
+残りの候補から高スコア順に最小限の救済辺を足し、
+全ノードが 1 つの連結成分に入るまで pair graph を補う。
+
+この救済辺は pair の意味的な本体ではなく、可視化と探索可能性を維持するための補助的な構造である。
+つまり、「どの関係を詳細に説明させるか」という本線の選別と、
+「グラフ全体を探索可能な状態に保つ」という要請を分けて扱っている。
+
+## Discussion
+
+この方法は argument 数が中規模であるあいだは機能するが、
+元の embedding 空間で全ペア距離を計算するため、件数が数万規模になると急速に重くなる。
+その意味で、現在の実装はスケーラビリティよりも透明性を優先している。
+利点は、centroid 選出の根拠が説明しやすいことである。
+元 embedding 上で Ward 法をかけ、そのクラスタ中心に最も近い argument を代表として選ぶ、
+という形になっている。
+
+一方、件数がさらに大きくなる場合は、厳密なクラスタリングの前に枝刈り段階を入れるのが自然である。
+たとえば locality-sensitive hashing (LSH) や他の approximate nearest neighbor 法を使って、
+まず「近そうな候補」だけを拾い、その候補集合の内部でだけ厳密な距離比較を行う方法がある。
+この設計では、近似インデックスはあくまで無関係な argument 同士の比較を減らすために使い、
+最終的に統合するかどうかの判定は正確な類似度計算に残す。
+そのため、異なる論点を過剰にまとめる危険を抑えつつ、総比較回数を減らすことができる。
+
+要するに、本稿のワークフローでは説明しやすさを優先して
+「元の巨大次元で全探索し、Ward 法 0.7 で足切りする」方法を採っているが、
+大規模化に備えるなら centroid 選出の前に明示的な枝刈り層を入れるのが有望である。
+
+## Conclusion
+
+このワークフローは意図的に用途を絞っている。まず LLM で下書きを作り、
+軽量なキュレーション UI で人手修正し、その結果からグラフ指向の成果物を派生させる。
+この構成により、人手で編集した中心成果物を監査しやすい形で保ちつつ、
+entity graph 構築や pairwise relation 可視化のような後続処理も支えられる。
+今後の課題は、異なる論点を過剰に統合しないという保守的な方針を維持しながら、
+centroid 選出段階をより大規模なデータにも耐えるようにしていくことである。

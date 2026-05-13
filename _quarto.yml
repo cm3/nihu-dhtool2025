@@ -1,0 +1,20 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "kouchou-ai keyword-curation workflow"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Overview
+      - href: slides.qmd
+        text: Slides
+      - href: paper.qmd
+        text: Paper
+
+format:
+  html:
+    toc: true
+    theme: cosmo
+

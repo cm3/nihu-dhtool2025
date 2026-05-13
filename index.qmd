@@ -1,0 +1,28 @@
+---
+title: "kouchou-ai / keyword-curation workflow"
+---
+
+## Overview
+
+このディレクトリは、`keyword-curation` を含むワークフローの技術レポート置き場です。
+
+当面の用途:
+
+- 何を入力にして何を出すかを整理する
+- `prepare_entity_candidates.py` まわりの処理を説明する
+- `keyword-curation` の役割を明確にする
+- スライドと短い報告書をまとめる
+
+## Related Repositories
+
+- `../keyword-curation`
+- `../kouchou-ai`
+
+## Draft Sections
+
+- 問題設定
+- データ生成フロー
+- Entity Linking 候補生成
+- `keyword-curation` による手修正
+- 今後の改善点
+

@@ -1,0 +1,15 @@
+.DS_Store
+.env
+.env.*
+.envrc
+.history/
+.quarto/
+.vite/
+_site/
+__pycache__/
+*.pyc
+
+# Raw/source text; derived outputs may still contain excerpts.
+data/comment_texts.json
+
+**/*.quarto_ipynb
