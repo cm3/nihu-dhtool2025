@@ -1,32 +1,22 @@
-# kouchou-ai-keyword-curation-workflow
+# kouchou-ai keyword-curation workflow
 
-Quarto で `keyword-curation` 周辺の技術レポートを書くための作業用ディレクトリです。
+CSV 形式のコメントデータを
+[`digitaldemocracy2030/kouchou-ai`](https://github.com/digitaldemocracy2030/kouchou-ai)
+の broad listening pipeline にかけた中間出力を起点に、エネルギー政策コメントに出てくる
+エンティティとその関係を整理するためのワークフローです。
 
-含める想定:
+詳細な説明は次のページを参照してください。
 
-- ワークフローの説明
-- 技術メモ
-- スライド
-- 短い論文・報告書
+https://cm3.github.io/nihu-dhtool2025/
 
-主要ファイル:
+## Contents
 
-- `_quarto.yml`: Quarto プロジェクト設定
-- `index.qmd`: 入口ページ
-- `slides.qmd`: スライド下書き
-- `paper.qmd`: 論文・報告書下書き
+- `index.qmd`: ワークフロー説明の元ファイル
 - `scripts/`: entity linking 後の集計・分析スクリプト
 - `data/`: レポートとビューアで参照する中間データ
-- `pair_relation_viewer.html`: `data/pair_relations.json` と `data/entity_opinions.json` を見るための静的ビューア
+- `pair_relation_viewer.html`: エンティティ関係の静的ビューア
 
-レンダリング例:
-
-```bash
-cd vendor/kouchou-ai-keyword-curation-workflow
-quarto render
-```
-
-Python スクリプトの依存関係:
+## Setup
 
 ```bash
 python -m venv .venv
@@ -38,10 +28,24 @@ LLM を呼び出すスクリプトでは `OPENAI_API_KEY` が必要です。
 
 ```bash
 export OPENAI_API_KEY=...
-python scripts/prepare_entity_candidates_no_draft.py --help
 ```
 
-注意:
+Quarto サイトを生成する場合:
+
+```bash
+quarto render
+```
+
+## Data Notes
 
 - `data/comment_texts.json` は元コメント本文を含むため Git 管理から除外しています。
 - `data/` 以下の派生データにもコメント由来の要約・抜粋が含まれる場合があります。
+- 公開前に、元データの公開条件と個人情報の有無を確認してください。
+
+## License
+
+- Code in `scripts/` and other software files is licensed under the MIT License.
+- Documentation and report content, including `README.md`, `index.qmd`, and Quarto-generated pages, is licensed under Creative Commons Attribution 4.0 International (CC BY 4.0).
+- Data files under `data/` are not covered by the software/documentation license grant unless separately stated.
+
+See `LICENSE` for details.

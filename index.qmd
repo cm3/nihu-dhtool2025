@@ -4,25 +4,197 @@ title: "kouchou-ai / keyword-curation workflow"
 
 ## Overview
 
-このディレクトリは、`keyword-curation` を含むワークフローの技術レポート置き場です。
+このディレクトリは、CSV 形式のコメントデータを `kouchou-ai` の broad listening
+pipeline にかけた中間出力を起点に、
+`keyword-curation` で人手確認した entity linking 結果を使って、
+エネルギー政策コメントに出てくるエンティティとその関係を整理するための
+作業用ワークフローです。
 
-当面の用途:
+主な成果物は次の 3 種類です。
 
-- 何を入力にして何を出すかを整理する
-- `prepare_entity_candidates.py` まわりの処理を説明する
-- `keyword-curation` の役割を明確にする
-- スライドと短い報告書をまとめる
+- `data/data.json`: L2 クラスタラベルに対する entity linking 結果
+- `data/entity_graph.json`: エンティティ間の共起・Wikidata 関係グラフ
+- `data/entity_opinions.json` / `data/pair_relations.json`: コメントに基づくエンティティ単位・ペア単位の意見要約
 
 ## Related Repositories
 
+- [`digitaldemocracy2030/kouchou-ai`](https://github.com/digitaldemocracy2030/kouchou-ai)
 - `../keyword-curation`
 - `../kouchou-ai`
 
-## Draft Sections
+## Input
 
-- 問題設定
-- データ生成フロー
-- Entity Linking 候補生成
-- `keyword-curation` による手修正
-- 今後の改善点
+上流の入力は、コメント CSV を `kouchou-ai` の broad listening pipeline で処理した中間ファイルです。
+このワークフローでは、主に次のファイルを参照します。
 
+- `hierarchical_result.json`: 階層クラスタリング結果。L2 クラスタラベルの入力として使います。
+- `hierarchical_clusters.csv`: argument と L1/L2 クラスタ ID の対応。コメント索引作成と micro-cluster の並び合わせに使います。
+- `final_result_with_comments.csv`: argument、コメント ID、元コメント本文。コメント索引とローカル本文参照ファイルの作成に使います。
+- `embeddings.pkl`: argument embedding。argument micro-cluster の作成に使います。
+
+ここでいう **L2 クラスタラベル** は、`kouchou-ai` がコメントから抽出した argument を
+階層クラスタリングしたときの第 2 階層クラスタにつけられた代表ラベルです。
+個別コメント本文ではなく、複数の argument をまとめた論点カテゴリの短い説明として扱います。
+
+このリポジトリでは、元コメント本文を含む `data/comment_texts.json` はローカル用とし、
+Git 管理から除外しています。
+
+## Workflow
+
+### 0. CSV を kouchou-ai で処理する
+
+最初に、元のコメント CSV を `kouchou-ai` の broad listening pipeline に入力します。
+この工程で、コメント本文から argument が抽出され、argument embedding が作られ、
+argument の階層クラスタリングとクラスタラベル生成が行われます。
+
+このリポジトリのスクリプトは、`kouchou-ai` の処理そのものは実行せず、
+その出力ディレクトリにある中間ファイルを読みます。
+
+- `hierarchical_result.json` は、L2 クラスタラベルを取り出して entity linking 候補生成に使います。
+- `hierarchical_clusters.csv` は、各 argument がどの L1/L2 クラスタに属するかを引くために使います。
+- `final_result_with_comments.csv` は、argument と元コメント本文、コメント ID を対応付けるために使います。
+- `embeddings.pkl` は、argument をより細かい micro-cluster に分けるために使います。
+
+### 1. Entity linking 候補を作る
+
+`scripts/prepare_entity_candidates_no_draft.py` は、`hierarchical_result.json` の
+L2 クラスタラベルから
+Wikidata にリンクできそうな語句を LLM で抽出し、Wikidata Search API の候補から
+最も適切な QID を選びます。
+
+出力は `data/data.json` です。この時点の結果は自動生成なので、
+`keyword-curation` で entity ID、ラベル、説明、リンク要否を人手確認します。
+
+```bash
+python scripts/prepare_entity_candidates_no_draft.py
+```
+
+### 2. Entity 説明を整える
+
+`scripts/refine_entity_descriptions.py` は、キュレーション済み `data/data.json` の
+entity description を日本語で短く整えます。
+
+これは後続のグラフ表示や LLM による意見抽出で、エンティティの意味を安定させるための工程です。
+
+```bash
+python scripts/refine_entity_descriptions.py --only-weak
+```
+
+### 3. Argument の micro-cluster を作る
+
+`scripts/build_argument_microclusters.py` は、argument embedding に Ward 法を適用し、
+近い argument を micro-cluster にまとめます。これは kouchou-ai の Argument がコメントごとに抽出されるため、コメントが似ていた場合、意味的に重複した Argument が多数抽出されるためです。今回扱ったパブコメデータは特にその点が問題になったためこのプロセスを挟んでいます。
+
+入力は `embeddings.pkl` と `hierarchical_clusters.csv` です。
+出力は `data/argument_microclusters_t0.7.csv` です。各 micro-cluster には centroid argument が付き、
+後続工程で代表的な論点を取り出しやすくします。
+
+```bash
+python scripts/build_argument_microclusters.py --threshold 0.7
+```
+
+### 4. コメントとクラスタの索引を作る
+
+`scripts/build_cluster_comment_index.py` は、argument、コメント ID、階層クラスタ、
+micro-cluster の対応をまとめます。
+
+入力は `final_result_with_comments.csv`、`hierarchical_clusters.csv`、
+`data/argument_microclusters_t0.7.csv` です。
+出力は次の 2 つです。
+
+- `data/cluster_comment_index.csv`: 公開・分析用の索引
+- `data/comment_texts.json`: コメント本文のローカル参照用ファイル
+
+```bash
+python scripts/build_cluster_comment_index.py
+```
+
+### 5. Wikidata property path を探索する
+
+`scripts/discover_property_paths.py` は、同じ L2 ラベル内で共起した QID ペアについて、
+Wikidata の `P31`、`P279`、`P361`、`P527` などを調べ、直接関係や共通上位クラスを探します。
+
+出力は次の 2 つです。
+
+- `data/property_paths.tsv`: 発見した関係
+- `data/entity_props_cache.json`: Wikidata API 結果のキャッシュ
+
+```bash
+python scripts/discover_property_paths.py
+```
+
+### 6. Entity graph を作る
+
+`scripts/build_entity_graph.py` は、`data/data.json` と `data/property_paths.tsv` から
+エンティティ中心のグラフを作ります。
+
+グラフには 2 種類のエッジがあります。
+
+- `co_mention`: 同一 L2 ラベル内での共起
+- `wikidata_property`: Wikidata property による関係
+
+出力は `data/entity_graph.json` です。
+
+```bash
+python scripts/build_entity_graph.py
+```
+
+### 7. Entity ごとの意見を抽出する
+
+`scripts/extract_entity_opinions.py` は、各エンティティが登場するクラスタに対応するコメントを集め、
+そのエンティティへの立場、主要な意見、他エンティティとの関係候補を LLM で抽出します。
+
+入力には `data/comment_texts.json` が必要です。出力は `data/entity_opinions.json` です。
+
+```bash
+python scripts/extract_entity_opinions.py --resume
+```
+
+### 8. Pair relation を抽出する
+
+`scripts/extract_pair_relations.py` は、`data/entity_opinions.json` と
+`data/entity_graph.json` を使ってスコアの高いエンティティペアを選び、
+両者が共起するコメントからペア単位の関係説明を LLM で作ります。
+
+出力は `data/pair_relations.json` です。
+
+```bash
+python scripts/extract_pair_relations.py --resume
+```
+
+### 9. Viewer を生成する
+
+`scripts/build_pair_relation_viewer.py` は、`data/pair_relations.json` と
+`data/entity_opinions.json` をブラウザで読むための静的 HTML を生成します。
+
+出力は `pair_relation_viewer.html` です。
+
+```bash
+python scripts/build_pair_relation_viewer.py
+```
+
+## Tools
+
+- [Pair relation viewer](./pair_relation_viewer.html)
+
+## Execution Order
+
+全体を作り直す場合の目安は次の順序です。
+
+```bash
+# kouchou-ai 側でコメント CSV を broad listening pipeline にかける
+# 以降は pipeline 出力ディレクトリの中間ファイルを使う
+python scripts/prepare_entity_candidates_no_draft.py
+# keyword-curation で data/data.json を確認・修正
+python scripts/refine_entity_descriptions.py --only-weak
+python scripts/build_argument_microclusters.py --threshold 0.7
+python scripts/build_cluster_comment_index.py
+python scripts/discover_property_paths.py
+python scripts/build_entity_graph.py
+python scripts/extract_entity_opinions.py --resume
+python scripts/extract_pair_relations.py --resume
+python scripts/build_pair_relation_viewer.py
+quarto render
+```
+
+LLM を呼ぶ工程では `OPENAI_API_KEY` が必要です。

@@ -1,0 +1,40 @@
+Code license: MIT License
+
+The MIT License applies to software/code files in this repository, including
+scripts/ and generated viewer code. Documentation and report content are
+licensed separately under CC BY 4.0 as stated below.
+
+Copyright (c) 2026 contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of the software and associated software documentation files (the "Software"),
+to deal in the Software without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Documentation license: Creative Commons Attribution 4.0 International
+
+Documentation and report content in this repository, including README.md,
+index.qmd, and Quarto-generated pages, is licensed under the Creative Commons
+Attribution 4.0 International License (CC BY 4.0):
+
+https://creativecommons.org/licenses/by/4.0/
+
+Data notice
+
+Data files under data/ are not covered by the software/documentation license
+grant unless separately stated. They may contain derived summaries or excerpts
+from source comments and should be reviewed under the source data's applicable
+terms before redistribution.

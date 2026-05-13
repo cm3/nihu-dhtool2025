@@ -1,6 +1,12 @@
 project:
   type: website
   output-dir: _site
+  render:
+    - index.qmd
+  resources:
+    - pair_relation_viewer.html
+    - data/entity_opinions.json
+    - data/pair_relations.json
 
 website:
   title: "kouchou-ai keyword-curation workflow"
@@ -8,13 +14,8 @@ website:
     left:
       - href: index.qmd
         text: Overview
-      - href: slides.qmd
-        text: Slides
-      - href: paper.qmd
-        text: Paper
 
 format:
   html:
     toc: true
     theme: cosmo
-
