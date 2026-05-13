@@ -160,7 +160,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#pair-relation-を抽出する" id="toc-pair-relation-を抽出する" class="nav-link" data-scroll-target="#pair-relation-を抽出する">8. Pair relation を抽出する</a></li>
   <li><a href="#viewer-を生成する" id="toc-viewer-を生成する" class="nav-link" data-scroll-target="#viewer-を生成する">9. Viewer を生成する</a></li>
   </ul></li>
-  <li><a href="#execution-order" id="toc-execution-order" class="nav-link" data-scroll-target="#execution-order">Execution Order</a></li>
   </ul>
 </nav>
     </div>
@@ -188,8 +187,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="overview" class="level2">
 <h2 class="anchored" data-anchor-id="overview">Overview</h2>
-<p>このディレクトリは、CSV 形式のコメントデータを <code>kouchou-ai</code> の broad listening pipeline にかけた中間出力を起点に、 <a href="https://keyword-curation.vercel.app/"><code>keyword-curation</code></a> で人手確認した entity linking 結果を使って、 エネルギー政策コメントに出てくるエンティティとその関係を整理するための 作業用ワークフローです。</p>
-<p>成果物は <a href="./pair_relation_viewer.html">Pair relation viewer</a> で、エンティティ間のネットワークやコメントに基づくエンティティ単位・ペア単位の意見要約をブラウズできるようになっています。</p>
+<p>このディレクトリは、CSV 形式のコメントデータを <code>kouchou-ai</code> の broad listening pipeline にかけた中間出力を起点に、<a href="https://keyword-curation.vercel.app/"><code>keyword-curation</code></a> で人手確認した entity linking 結果を使って、情報公開請求を行なった第7次エネルギー基本計画（令和7年2月）のパブリックコメントに出てくるエンティティとその関係を整理するための作業用ワークフローです。</p>
+<p>これまで、私（人間文化研究機構 亀田尭宙）は、千葉大学の石井康平氏と共に<a href="https://ipsj.ixsq.nii.ac.jp/records/2006190">環境政策形成に関する審議会の議事録分析に基づく主題構成比較</a>などで、<code>kouchou-ai</code>と類似したBERTopicを用いた政策形成過程の分析を、議事録、パブコメ、政策文書などの資料について環境政策を対象に行なってきました。</p>
+<p>この幅を広げるにあたって、エネルギー政策の政策形成過程に着目した時に、以下のような話題がありました。</p>
+<ul>
+<li><a href="https://www.asahi.com/articles/DA3S16152501.html">エネ基パブコメに４．１万件超　過去最多　原発へ「懸念の声」、計画に反映：朝日新聞</a></li>
+<li><a href="https://www.nikkei.com/article/DGXZQOUA19C490Z10C25A2000000/">エネルギー基本計画のパブリックコメントでAI利用、4000件弱投稿か - 日本経済新聞</a></li>
+</ul>
+<p>そこで、<a href="https://www.enecho.meti.go.jp/committee/council/basic_policy_subcommittee/opinion/2024_public.html">公開されているパブリックコメント</a>と別途、情報公開請求で元データを入手し、大量の類似したコメントから、有意義なエンティティとその関係を抽出することを目標にしました。また、<code>kouchou-ai</code>のような既存のツールを使ったワークフローにすることで、実務家のワークフローに組み込める形を目指しました。</p>
+<p>成果物は <a href="./pair_relation_viewer.html">Pair relation viewer</a> で、エンティティ間のネットワークやコメントに基づくエンティティ単位・ペア単位の意見要約をブラウズできるようになっています。数が少ないが重要な意見を拾い上げることができているという点で一定の価値があるワークフローを構築できたのではないかと思っています。</p>
+<p>今後、学術的な検証や、評価、このワークフローを実務化や他の研究者が容易に利用できるようにするための工夫などに取り組んでいきたいと考えています。</p>
 </section>
 <section id="related-repositories" class="level2">
 <h2 class="anchored" data-anchor-id="related-repositories">Related Repositories</h2>
@@ -208,7 +215,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>embeddings.pkl</code>: argument embedding。argument micro-cluster の作成に使います。</li>
 </ul>
 <p>ここでいう <strong>L2 クラスタラベル</strong> は、<code>kouchou-ai</code> がコメントから抽出した argument を 階層クラスタリングしたときの第 2 階層クラスタにつけられた代表ラベルです。 個別コメント本文ではなく、複数の argument をまとめた論点カテゴリの短い説明として扱います。</p>
-<p>このリポジトリでは、元コメント本文を含む <code>data/comment_texts.json</code> はローカル用とし、 Git 管理から除外しています。</p>
+<p>このリポジトリでは、元コメント本文を含む <code>data/comment_texts.json</code> はGit 管理から除外しています。一方、要約、一部引用した元コメントはデータに含まれています。</p>
 </section>
 <section id="workflow" class="level2">
 <h2 class="anchored" data-anchor-id="workflow">Workflow</h2>
@@ -289,27 +296,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><code>scripts/build_pair_relation_viewer.py</code> は、<code>data/pair_relations.json</code> と <code>data/entity_opinions.json</code> をブラウザで読むための静的 HTML を生成します。</p>
 <p>出力は <code>pair_relation_viewer.html</code> です。</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/build_pair_relation_viewer.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-</section>
-<section id="execution-order" class="level2">
-<h2 class="anchored" data-anchor-id="execution-order">Execution Order</h2>
-<p>全体を作り直す場合の目安は次の順序です。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># kouchou-ai 側でコメント CSV を broad listening pipeline にかける</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 以降は pipeline 出力ディレクトリの中間ファイルを使う</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/prepare_entity_candidates_no_draft.py</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># keyword-curation で data/data.json を確認・修正</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/refine_entity_descriptions.py <span class="at">--only-weak</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/build_argument_microclusters.py <span class="at">--threshold</span> 0.7</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/build_cluster_comment_index.py</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/discover_property_paths.py</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/build_entity_graph.py</span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/extract_entity_opinions.py <span class="at">--resume</span></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/extract_pair_relations.py <span class="at">--resume</span></span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/build_pair_relation_viewer.py</span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
 <p>LLM を呼ぶ工程では <code>OPENAI_API_KEY</code> が必要です。</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
