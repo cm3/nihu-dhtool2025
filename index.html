@@ -159,21 +159,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="関連リポジトリ" class="level2">
 <h2 class="anchored" data-anchor-id="関連リポジトリ">関連リポジトリ</h2>
 <ul>
-<li><a href="https://github.com/cm3/nihu-dhtool2025">`cm3/nihu-dhtool2025</a> この説明に加えてスクリプトやデータを含む本リポジトリ。</li>
-<li><a href="https://github.com/digitaldemocracy2030/kouchou-ai"><code>digitaldemocracy2030/kouchou-ai</code></a></li>
-<li><a href="https://github.com/cm3/keyword-curation"><code>cm3/keyword-curation</code></a></li>
+<li><a href="https://github.com/cm3/nihu-dhtool2025">cm3/nihu-dhtool2025</a> この説明に加えてスクリプトやデータを含む本リポジトリ。</li>
+<li><a href="https://github.com/digitaldemocracy2030/kouchou-ai">digitaldemocracy2030/kouchou-ai</a> 広聴AIのリポジトリ。</li>
+<li><a href="https://github.com/cm3/keyword-curation">cm3/keyword-curation</a> keyword-curation リポジトリ。<a href="https://keyword-curation.vercel.app/">デモページ</a></li>
 </ul>
 </section>
 <section id="入力データ" class="level2">
 <h2 class="anchored" data-anchor-id="入力データ">入力データ</h2>
 <p>上流の入力は、コメント CSV を広聴AIのレポート生成パイプラインで処理した中間ファイルです。 このワークフローでは、広聴AIで生成した次のファイルをこのリポジトリの <code>data/</code> に配置してから各スクリプトを実行します。</p>
 <ul>
-<li><code>data/hierarchical_result.json</code>: 階層クラスタリング結果。L2 クラスタラベルの入力として使います。</li>
+<li><code>data/hierarchical_result.json</code>: 階層クラスタリング結果。L2 クラスタラベルと takeaway の入力として使います。</li>
 <li><code>data/hierarchical_clusters.csv</code>: argument と L1/L2 クラスタ ID の対応。コメント索引作成と局所クラスタの並び合わせに使います。</li>
 <li><code>data/final_result_with_comments.csv</code>: argument、コメント ID、元コメント本文。コメント索引とローカル本文参照ファイルの作成に使います。</li>
 <li><code>data/embeddings.pkl</code>: argument embedding。argument の局所クラスタ作成に使います。</li>
 </ul>
-<p>ここでいう <strong>L2 クラスタラベル</strong> は、広聴AIがコメントから抽出した argument を 階層クラスタリングしたときの第 2 階層クラスタにつけられた代表ラベルです。 個別コメント本文ではなく、複数の argument をまとめた論点カテゴリの短い説明として扱います。</p>
+<p>ここでいう <strong>L2 クラスタラベル</strong> は、広聴AIがコメントから抽出した argument を 階層クラスタリングしたときの第 2 階層クラスタにつけられた代表ラベルです。 個別コメント本文ではなく、複数の argument をまとめた論点カテゴリの短い説明として扱います。 <strong>takeaway</strong> は、同じクラスタの要点を文章で要約した補助文脈です。短い L2 クラスタラベルだけでは 出てこない具体的な技術名や制度名が takeaway に含まれることがあるため、このワークフローでは entity linking 候補抽出と人手確認の両方で参照します。</p>
 <p>このリポジトリでは、元コメント本文を含む <code>data/comment_texts.json</code> はGit 管理から除外しています。一方、要約、一部引用した元コメントはデータに含まれています。</p>
 </section>
 <section id="ワークフロー" class="level2">
@@ -193,7 +193,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> /path/to/kouchou-ai/apps/api/broadlistening/pipeline/outputs/<span class="op">&lt;</span>run-id<span class="op">&gt;</span>/final_result_with_comments.csv data/</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> /path/to/kouchou-ai/apps/api/broadlistening/pipeline/outputs/<span class="op">&lt;</span>run-id<span class="op">&gt;</span>/embeddings.pkl data/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
-<li><code>data/hierarchical_result.json</code> は、L2 クラスタラベルを取り出して entity linking 候補生成に使います。</li>
+<li><code>data/hierarchical_result.json</code> は、L2 クラスタラベルと takeaway を取り出して entity linking 候補生成に使います。</li>
 <li><code>data/hierarchical_clusters.csv</code> は、各 argument がどの L1/L2 クラスタに属するかを引くために使います。</li>
 <li><code>data/final_result_with_comments.csv</code> は、argument と元コメント本文、コメント ID を対応付けるために使います。</li>
 <li><code>data/embeddings.pkl</code> は、argument をより細かい局所クラスタに分けるために使います。</li>
@@ -201,8 +201,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="entity-linking-候補を作る" class="level3">
 <h3 class="anchored" data-anchor-id="entity-linking-候補を作る">1. Entity linking 候補を作る</h3>
-<p><code>scripts/prepare_entity_candidates_no_draft.py</code> は、<code>data/hierarchical_result.json</code> の L2 クラスタラベルから Wikidata にリンクできそうな語句を LLM で抽出し、Wikidata Search API の候補から 最も適切な QID を選びます。</p>
-<p>出力は <code>data/data.json</code> です。この時点の結果は自動生成なので、 <code>keyword-curation</code> で entity ID、ラベル、説明、リンク要否を人手確認します。</p>
+<p><code>scripts/prepare_entity_candidates_no_draft.py</code> は、<code>data/hierarchical_result.json</code> の L2 クラスタラベルと takeaway から Wikidata にリンクできそうな語句を LLM で抽出し、Wikidata Search API の候補から 最も適切な QID を選びます。</p>
+<p>出力は <code>data/data.json</code> です。各 item には L2 クラスタラベルに加えて takeaway も含めます。 この時点の結果は自動生成なので、<code>keyword-curation</code> で takeaway を参照しながら entity ID、ラベル、説明、リンク要否を人手確認します。</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/prepare_entity_candidates_no_draft.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="entity-説明を整える" class="level3">
