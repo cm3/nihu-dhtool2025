@@ -9,13 +9,12 @@ project:
     - data/pair_relations.json
 
 website:
-  title: "kouchou-ai keyword-curation workflow"
-  navbar:
-    left:
-      - href: index.qmd
-        text: Overview
+  title: "広聴AI keyword-curation ワークフロー"
+  navbar: false
+  search: false
 
 format:
   html:
     toc: true
     theme: cosmo
+    search: false

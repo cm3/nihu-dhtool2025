@@ -8,10 +8,10 @@ L2 クラスタラベル（64件）に対して:
   4. 人手修正用 candidates.json を出力
 
 入力:
-    hierarchical_result.json
+    data/hierarchical_result.json
 
 出力:
-    work/kouchou-ai/el/candidates.json
+    data/data.json
 
 使い方:
     python scripts/prepare_entity_candidates_no_draft.py
@@ -31,12 +31,7 @@ from pathlib import Path
 from openai import OpenAI
 
 ROOT = Path(__file__).resolve().parents[1]
-WORKSPACE_ROOT = ROOT.parents[1]
-DEFAULT_RESULT_JSON = (
-    WORKSPACE_ROOT
-    / "vendor/kouchou-ai/apps/api/broadlistening/pipeline/outputs"
-    / "a1e672b1-d29b-4e06-b9c8-79861a26f53d/hierarchical_result.json"
-)
+DEFAULT_RESULT_JSON = ROOT / "data/hierarchical_result.json"
 DEFAULT_OUTPUT_JSON = ROOT / "data/data.json"
 
 WIKIDATA_API = "https://www.wikidata.org/w/api.php"

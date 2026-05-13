@@ -25,7 +25,6 @@ from pathlib import Path
 from openai import OpenAI
 
 ROOT = Path(__file__).resolve().parents[1]
-WORKSPACE_ROOT = Path(__file__).resolve().parents[3]
 
 DEFAULT_OPINIONS_JSON = ROOT / "data/entity_opinions.json"
 DEFAULT_GRAPH_JSON = ROOT / "data/entity_graph.json"

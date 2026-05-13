@@ -1,64 +1,85 @@
 ---
-title: "kouchou-ai / keyword-curation workflow"
+title: "広聴AI / keyword-curation ワークフロー"
 ---
 
-## Overview
+## 概要
 
-このディレクトリは、CSV 形式のコメントデータを `kouchou-ai` の broad listening pipeline にかけた中間出力を起点に、[`keyword-curation`](https://keyword-curation.vercel.app/) で人手確認した entity linking 結果を使って、情報公開請求を行なった第7次エネルギー基本計画（令和7年2月）のパブリックコメントに出てくるエンティティとその関係を整理するための作業用ワークフローです。
+このディレクトリは、CSV 形式のコメントデータを広聴AIのレポート生成パイプラインにかけた中間出力を起点に、[`keyword-curation`](https://keyword-curation.vercel.app/) で人手確認した entity linking 結果を使って、情報公開請求を行なった第7次エネルギー基本計画（令和7年2月）のパブリックコメントに出てくるエンティティとその関係を整理するための作業用ワークフローです。
 
-これまで、私（人間文化研究機構 亀田尭宙）は、千葉大学の石井康平氏と共に[環境政策形成に関する審議会の議事録分析に基づく主題構成比較](https://ipsj.ixsq.nii.ac.jp/records/2006190)などで、`kouchou-ai`と類似したBERTopicを用いた政策形成過程の分析を、議事録、パブコメ、政策文書などの資料について環境政策を対象に行なってきました。
+これまで、私（人間文化研究機構 亀田尭宙）は、千葉大学の石井康平氏と共に[環境政策形成に関する審議会の議事録分析に基づく主題構成比較](https://ipsj.ixsq.nii.ac.jp/records/2006190)などで、広聴AIと類似したBERTopicを用いた政策形成過程の分析を、議事録、パブコメ、政策文書などの資料について環境政策を対象に行なってきました。
 
 この幅を広げるにあたって、エネルギー政策の政策形成過程に着目した時に、以下のような話題がありました。
 
 - [エネ基パブコメに４．１万件超　過去最多　原発へ「懸念の声」、計画に反映：朝日新聞](https://www.asahi.com/articles/DA3S16152501.html)
 - [エネルギー基本計画のパブリックコメントでAI利用、4000件弱投稿か \- 日本経済新聞](https://www.nikkei.com/article/DGXZQOUA19C490Z10C25A2000000/)
 
-そこで、[公開されているパブリックコメント](https://www.enecho.meti.go.jp/committee/council/basic_policy_subcommittee/opinion/2024_public.html)と別途、情報公開請求で元データを入手し、大量の類似したコメントから、有意義なエンティティとその関係を抽出することを目標にしました。また、`kouchou-ai`のような既存のツールを使ったワークフローにすることで、実務家のワークフローに組み込める形を目指しました。
+そこで、[公開されているパブリックコメント](https://www.enecho.meti.go.jp/committee/council/basic_policy_subcommittee/opinion/2024_public.html)と別途、情報公開請求で元データを入手し、大量の類似したコメントから、有意義なエンティティとその関係を抽出することを目標にしました。また、広聴AIのような既存のツールを使ったワークフローにすることで、実務家のワークフローに組み込める形を目指しました。
 
-成果物は [Pair relation viewer](./pair_relation_viewer.html) で、エンティティ間のネットワークやコメントに基づくエンティティ単位・ペア単位の意見要約をブラウズできるようになっています。数が少ないが重要な意見を拾い上げることができているという点で一定の価値があるワークフローを構築できたのではないかと思っています。
+成果物は [議論ビューアー](./pair_relation_viewer.html) で、エンティティ間のネットワークやコメントに基づくエンティティ単位・ペア単位の意見要約をブラウズできるようになっています。数が少ないが重要な意見を拾い上げることができているという点で一定の価値があるワークフローを構築できたのではないかと思っています。
 
 今後、学術的な検証や、評価、このワークフローを実務化や他の研究者が容易に利用できるようにするための工夫などに取り組んでいきたいと考えています。
 
-## Related Repositories
+## 関連リポジトリ
 
+- [`cm3/nihu-dhtool2025](https://github.com/cm3/nihu-dhtool2025) この説明に加えてスクリプトやデータを含む本リポジトリ。
 - [`digitaldemocracy2030/kouchou-ai`](https://github.com/digitaldemocracy2030/kouchou-ai)
 - [`cm3/keyword-curation`](https://github.com/cm3/keyword-curation)
 
-## Input
+## 入力データ
 
-上流の入力は、コメント CSV を `kouchou-ai` の broad listening pipeline で処理した中間ファイルです。
-このワークフローでは、主に次のファイルを参照します。
+上流の入力は、コメント CSV を広聴AIのレポート生成パイプラインで処理した中間ファイルです。
+このワークフローでは、広聴AIで生成した次のファイルをこのリポジトリの `data/` に配置してから各スクリプトを実行します。
 
-- `hierarchical_result.json`: 階層クラスタリング結果。L2 クラスタラベルの入力として使います。
-- `hierarchical_clusters.csv`: argument と L1/L2 クラスタ ID の対応。コメント索引作成と micro-cluster の並び合わせに使います。
-- `final_result_with_comments.csv`: argument、コメント ID、元コメント本文。コメント索引とローカル本文参照ファイルの作成に使います。
-- `embeddings.pkl`: argument embedding。argument micro-cluster の作成に使います。
+- `data/hierarchical_result.json`: 階層クラスタリング結果。L2 クラスタラベルの入力として使います。
+- `data/hierarchical_clusters.csv`: argument と L1/L2 クラスタ ID の対応。コメント索引作成と局所クラスタの並び合わせに使います。
+- `data/final_result_with_comments.csv`: argument、コメント ID、元コメント本文。コメント索引とローカル本文参照ファイルの作成に使います。
+- `data/embeddings.pkl`: argument embedding。argument の局所クラスタ作成に使います。
 
-ここでいう **L2 クラスタラベル** は、`kouchou-ai` がコメントから抽出した argument を
+ここでいう **L2 クラスタラベル** は、広聴AIがコメントから抽出した argument を
 階層クラスタリングしたときの第 2 階層クラスタにつけられた代表ラベルです。
 個別コメント本文ではなく、複数の argument をまとめた論点カテゴリの短い説明として扱います。
 
 このリポジトリでは、元コメント本文を含む `data/comment_texts.json` はGit 管理から除外しています。一方、要約、一部引用した元コメントはデータに含まれています。
 
-## Workflow
+## ワークフロー
 
-### 0. CSV を kouchou-ai で処理する
+### 0. CSV を広聴AIで処理する
 
-最初に、元のコメント CSV を `kouchou-ai` の broad listening pipeline に入力します。
+最初に、元のコメント CSV を広聴AIのレポート生成パイプラインに入力します。
 この工程で、コメント本文から argument が抽出され、argument embedding が作られ、
 argument の階層クラスタリングとクラスタラベル生成が行われます。
 
-このリポジトリのスクリプトは、`kouchou-ai` の処理そのものは実行せず、
-その出力ディレクトリにある中間ファイルを読みます。
+このリポジトリのスクリプトは、広聴AIの処理そのものは実行せず、
+`data/` に配置された広聴AIの中間ファイルを読みます。
+広聴AIをリポジトリ直下で実行した場合、中間ファイルは通常
+`apps/api/broadlistening/pipeline/outputs/` 以下の実行 ID ごとのディレクトリに出力されます。
+必要なファイルの場所は、次のように探せます。
 
-- `hierarchical_result.json` は、L2 クラスタラベルを取り出して entity linking 候補生成に使います。
-- `hierarchical_clusters.csv` は、各 argument がどの L1/L2 クラスタに属するかを引くために使います。
-- `final_result_with_comments.csv` は、argument と元コメント本文、コメント ID を対応付けるために使います。
-- `embeddings.pkl` は、argument をより細かい micro-cluster に分けるために使います。
+```bash
+find /path/to/kouchou-ai/apps/api/broadlistening/pipeline/outputs \
+  -name hierarchical_result.json \
+  -o -name hierarchical_clusters.csv \
+  -o -name final_result_with_comments.csv \
+  -o -name embeddings.pkl
+```
+
+対象の実行 ID のディレクトリを確認したら、必要な中間ファイルをこのリポジトリの `data/` にコピーします。
+
+```bash
+cp /path/to/kouchou-ai/apps/api/broadlistening/pipeline/outputs/<run-id>/hierarchical_result.json data/
+cp /path/to/kouchou-ai/apps/api/broadlistening/pipeline/outputs/<run-id>/hierarchical_clusters.csv data/
+cp /path/to/kouchou-ai/apps/api/broadlistening/pipeline/outputs/<run-id>/final_result_with_comments.csv data/
+cp /path/to/kouchou-ai/apps/api/broadlistening/pipeline/outputs/<run-id>/embeddings.pkl data/
+```
+
+- `data/hierarchical_result.json` は、L2 クラスタラベルを取り出して entity linking 候補生成に使います。
+- `data/hierarchical_clusters.csv` は、各 argument がどの L1/L2 クラスタに属するかを引くために使います。
+- `data/final_result_with_comments.csv` は、argument と元コメント本文、コメント ID を対応付けるために使います。
+- `data/embeddings.pkl` は、argument をより細かい局所クラスタに分けるために使います。
 
 ### 1. Entity linking 候補を作る
 
-`scripts/prepare_entity_candidates_no_draft.py` は、`hierarchical_result.json` の
+`scripts/prepare_entity_candidates_no_draft.py` は、`data/hierarchical_result.json` の
 L2 クラスタラベルから
 Wikidata にリンクできそうな語句を LLM で抽出し、Wikidata Search API の候補から
 最も適切な QID を選びます。
@@ -81,13 +102,13 @@ entity description を日本語で短く整えます。
 python scripts/refine_entity_descriptions.py --only-weak
 ```
 
-### 3. Argument の micro-cluster を作る
+### 3. Argument の局所クラスタを作る
 
 `scripts/build_argument_microclusters.py` は、argument embedding に Ward 法を適用し、
-近い argument を micro-cluster にまとめます。これは kouchou-ai の Argument がコメントごとに抽出されるため、コメントが似ていた場合、意味的に重複した Argument が多数抽出されるためです。今回扱ったパブコメデータは特にその点が問題になったためこのプロセスを挟んでいます。
+近い argument を局所クラスタにまとめます。ここでいう局所クラスタは、全体の階層クラスタとは別に、意味的に近い argument をさらに細かくまとめた小クラスタです。広聴AIの argument はコメントごとに抽出されるため、コメントが似ていた場合、意味的に重複した argument が多数抽出されます。今回扱ったパブコメデータは特にその点が問題になったためこのプロセスを挟んでいます。
 
-入力は `embeddings.pkl` と `hierarchical_clusters.csv` です。
-出力は `data/argument_microclusters_t0.7.csv` です。各 micro-cluster には centroid argument が付き、
+入力は `data/embeddings.pkl` と `data/hierarchical_clusters.csv` です。
+出力は `data/argument_microclusters_t0.7.csv` です。各局所クラスタにはセントロイド argument が付き、
 後続工程で代表的な論点を取り出しやすくします。
 
 ```bash
@@ -97,9 +118,9 @@ python scripts/build_argument_microclusters.py --threshold 0.7
 ### 4. コメントとクラスタの索引を作る
 
 `scripts/build_cluster_comment_index.py` は、argument、コメント ID、階層クラスタ、
-micro-cluster の対応をまとめます。
+局所クラスタの対応をまとめます。
 
-入力は `final_result_with_comments.csv`、`hierarchical_clusters.csv`、
+入力は `data/final_result_with_comments.csv`、`data/hierarchical_clusters.csv`、
 `data/argument_microclusters_t0.7.csv` です。
 出力は次の 2 つです。
 
@@ -151,7 +172,7 @@ python scripts/build_entity_graph.py
 python scripts/extract_entity_opinions.py --resume
 ```
 
-### 8. Pair relation を抽出する
+### 8. ペア関係を抽出する
 
 `scripts/extract_pair_relations.py` は、`data/entity_opinions.json` と
 `data/entity_graph.json` を使ってスコアの高いエンティティペアを選び、
@@ -163,7 +184,7 @@ python scripts/extract_entity_opinions.py --resume
 python scripts/extract_pair_relations.py --resume
 ```
 
-### 9. Viewer を生成する
+### 9. 議論ビューアーを生成する
 
 `scripts/build_pair_relation_viewer.py` は、`data/pair_relations.json` と
 `data/entity_opinions.json` をブラウザで読むための静的 HTML を生成します。

@@ -2,8 +2,8 @@
 comment と cluster / centroid の対応関係をまとめた索引を生成する。
 
 入力:
-- final_result_with_comments.csv
-- hierarchical_clusters.csv
+- data/final_result_with_comments.csv
+- data/hierarchical_clusters.csv
 - argument_microclusters_t*.csv
 
 出力:
@@ -19,12 +19,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-WORKSPACE_ROOT = Path(__file__).resolve().parents[3]
-DEFAULT_KOUCHOU_OUTPUT_DIR = (
-    WORKSPACE_ROOT
-    / "vendor/kouchou-ai/apps/api/broadlistening/pipeline/outputs"
-    / "a1e672b1-d29b-4e06-b9c8-79861a26f53d"
-)
+DEFAULT_INPUT_DIR = ROOT / "data"
 DEFAULT_MICROCLUSTERS_CSV = ROOT / "data/argument_microclusters_t0.7.csv"
 DEFAULT_INDEX_CSV = ROOT / "data/cluster_comment_index.csv"
 DEFAULT_TEXTS_JSON = ROOT / "data/comment_texts.json"
@@ -35,13 +30,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--final-result-csv",
         type=Path,
-        default=DEFAULT_KOUCHOU_OUTPUT_DIR / "final_result_with_comments.csv",
+        default=DEFAULT_INPUT_DIR / "final_result_with_comments.csv",
         help="Path to final_result_with_comments.csv",
     )
     parser.add_argument(
         "--hierarchical-clusters-csv",
         type=Path,
-        default=DEFAULT_KOUCHOU_OUTPUT_DIR / "hierarchical_clusters.csv",
+        default=DEFAULT_INPUT_DIR / "hierarchical_clusters.csv",
         help="Path to hierarchical_clusters.csv",
     )
     parser.add_argument(

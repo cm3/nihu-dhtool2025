@@ -34,7 +34,6 @@ import numpy as np
 from openai import OpenAI
 
 ROOT = Path(__file__).resolve().parents[1]
-WORKSPACE_ROOT = ROOT.parents[1]
 DEFAULT_DATA_JSON = ROOT / "data/data.json"
 DEFAULT_INDEX_CSV = ROOT / "data/cluster_comment_index.csv"
 DEFAULT_COMMENT_TEXTS_JSON = ROOT / "data/comment_texts.json"

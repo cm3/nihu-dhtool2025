@@ -16,12 +16,7 @@ from scipy.cluster.hierarchy import fcluster, linkage
 from scipy.spatial.distance import pdist
 
 ROOT = Path(__file__).resolve().parents[1]
-WORKSPACE_ROOT = Path(__file__).resolve().parents[3]
-DEFAULT_KOUCHOU_OUTPUT_DIR = (
-    WORKSPACE_ROOT
-    / "vendor/kouchou-ai/apps/api/broadlistening/pipeline/outputs"
-    / "a1e672b1-d29b-4e06-b9c8-79861a26f53d"
-)
+DEFAULT_INPUT_DIR = ROOT / "data"
 
 
 def parse_args() -> argparse.Namespace:
@@ -30,13 +25,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--embeddings-pkl",
         type=Path,
-        default=DEFAULT_KOUCHOU_OUTPUT_DIR / "embeddings.pkl",
+        default=DEFAULT_INPUT_DIR / "embeddings.pkl",
         help="Path to embeddings.pkl",
     )
     parser.add_argument(
         "--hierarchical-clusters-csv",
         type=Path,
-        default=DEFAULT_KOUCHOU_OUTPUT_DIR / "hierarchical_clusters.csv",
+        default=DEFAULT_INPUT_DIR / "hierarchical_clusters.csv",
         help="Path to hierarchical_clusters.csv",
     )
     parser.add_argument(

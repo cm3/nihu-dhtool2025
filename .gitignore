@@ -11,6 +11,10 @@ __pycache__/
 *.pyc
 
 # Raw/source text; derived outputs may still contain excerpts.
+data/hierarchical_result.json
+data/hierarchical_clusters.csv
+data/final_result_with_comments.csv
+data/embeddings.pkl
 data/comment_texts.json
 
 **/*.quarto_ipynb
