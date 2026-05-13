@@ -160,7 +160,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#pair-relation-を抽出する" id="toc-pair-relation-を抽出する" class="nav-link" data-scroll-target="#pair-relation-を抽出する">8. Pair relation を抽出する</a></li>
   <li><a href="#viewer-を生成する" id="toc-viewer-を生成する" class="nav-link" data-scroll-target="#viewer-を生成する">9. Viewer を生成する</a></li>
   </ul></li>
-  <li><a href="#tools" id="toc-tools" class="nav-link" data-scroll-target="#tools">Tools</a></li>
   <li><a href="#execution-order" id="toc-execution-order" class="nav-link" data-scroll-target="#execution-order">Execution Order</a></li>
   </ul>
 </nav>
@@ -189,20 +188,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="overview" class="level2">
 <h2 class="anchored" data-anchor-id="overview">Overview</h2>
-<p>このディレクトリは、CSV 形式のコメントデータを <code>kouchou-ai</code> の broad listening pipeline にかけた中間出力を起点に、 <code>keyword-curation</code> で人手確認した entity linking 結果を使って、 エネルギー政策コメントに出てくるエンティティとその関係を整理するための 作業用ワークフローです。</p>
-<p>主な成果物は次の 3 種類です。</p>
-<ul>
-<li><code>data/data.json</code>: L2 クラスタラベルに対する entity linking 結果</li>
-<li><code>data/entity_graph.json</code>: エンティティ間の共起・Wikidata 関係グラフ</li>
-<li><code>data/entity_opinions.json</code> / <code>data/pair_relations.json</code>: コメントに基づくエンティティ単位・ペア単位の意見要約</li>
-</ul>
+<p>このディレクトリは、CSV 形式のコメントデータを <code>kouchou-ai</code> の broad listening pipeline にかけた中間出力を起点に、 <a href="https://keyword-curation.vercel.app/"><code>keyword-curation</code></a> で人手確認した entity linking 結果を使って、 エネルギー政策コメントに出てくるエンティティとその関係を整理するための 作業用ワークフローです。</p>
+<p>成果物は <a href="./pair_relation_viewer.html">Pair relation viewer</a> で、エンティティ間のネットワークやコメントに基づくエンティティ単位・ペア単位の意見要約をブラウズできるようになっています。</p>
 </section>
 <section id="related-repositories" class="level2">
 <h2 class="anchored" data-anchor-id="related-repositories">Related Repositories</h2>
 <ul>
 <li><a href="https://github.com/digitaldemocracy2030/kouchou-ai"><code>digitaldemocracy2030/kouchou-ai</code></a></li>
-<li><code>../keyword-curation</code></li>
-<li><code>../kouchou-ai</code></li>
+<li><a href="https://github.com/cm3/keyword-curation"><code>cm3/keyword-curation</code></a></li>
 </ul>
 </section>
 <section id="input" class="level2">
@@ -297,12 +290,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>出力は <code>pair_relation_viewer.html</code> です。</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/build_pair_relation_viewer.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-</section>
-<section id="tools" class="level2">
-<h2 class="anchored" data-anchor-id="tools">Tools</h2>
-<ul>
-<li><a href="./pair_relation_viewer.html">Pair relation viewer</a></li>
-</ul>
 </section>
 <section id="execution-order" class="level2">
 <h2 class="anchored" data-anchor-id="execution-order">Execution Order</h2>
