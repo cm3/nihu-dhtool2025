@@ -224,24 +224,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="entity-graph-を作る" class="level3">
 <h3 class="anchored" data-anchor-id="entity-graph-を作る">6. Entity graph を作る</h3>
-<p><code>scripts/build_entity_graph.py</code> は、<code>data/data.json</code> と <code>data/property_paths.tsv</code> から エンティティ中心のグラフを作ります。</p>
+<p><code>scripts/build_entity_graph.py</code> は、<code>data/data.json</code> と <code>data/property_paths.tsv</code> から エンティティ中心のグラフを作ります。ここでのノードは、<code>keyword-curation</code> で確認した <code>entity_id</code> 単位の統制済みエンティティです。同じエンティティが複数の L2 クラスタに現れた場合は、 その <code>item_id</code> や表記ゆれをノード側に集約します。</p>
 <p>グラフには 2 種類のエッジがあります。</p>
 <ul>
-<li><code>co_mention</code>: 同一 L2 ラベル内での共起</li>
-<li><code>wikidata_property</code>: Wikidata property による関係</li>
+<li><code>co_mention</code>: 同一 L2 ラベル内での共起。コメント上で同じ論点カテゴリに現れたエンティティ同士を結びます。</li>
+<li><code>wikidata_property</code>: Wikidata property による関係。<code>P31</code>、<code>P279</code>、<code>P361</code>、<code>P527</code> などから見つかった直接関係や共通上位クラスに基づきます。</li>
 </ul>
+<p>この段階のエッジは、コメント本文を読んで説明した関係ではなく、共起と Wikidata に基づく構造的な手がかりです。 後続のペア関係抽出では、この <code>co_mention</code> の重みが説明対象ペアの選定に使われます。</p>
 <p>出力は <code>data/entity_graph.json</code> です。</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/build_entity_graph.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="entity-ごとの意見を抽出する" class="level3">
 <h3 class="anchored" data-anchor-id="entity-ごとの意見を抽出する">7. Entity ごとの意見を抽出する</h3>
-<p><code>scripts/extract_entity_opinions.py</code> は、各エンティティが登場するクラスタに対応するコメントを集め、 そのエンティティへの立場、主要な意見、他エンティティとの関係候補を LLM で抽出します。</p>
+<p><code>scripts/extract_entity_opinions.py</code> は、各エンティティが登場するクラスタに対応するコメントを集め、 そのエンティティへの立場、主要な意見、他エンティティとの関係候補を LLM で抽出します。 入力としては、注目エンティティ、そのエンティティが出る L2 クラスタのコメント、 キュレーション済みエンティティ一覧を渡します。</p>
+<p>出力の <code>relations</code> は、コメント本文から見て「このエンティティは別のどのエンティティと関係して語られているか」を示す候補です。 関係タイプには <code>promotes</code>、<code>opposes</code>、<code>requires</code>、<code>replaces</code>、<code>risk_of</code>、<code>compared_with</code>、<code>causes</code>、<code>solution_for</code> があります。 この関係タイプの一覧は、<code>scripts/extract_entity_opinions.py</code> のプロンプトに固定で書いているもので、データから自動的に作っているわけではありません。 現在の一覧はエネルギー政策コメントを想定した作業用の分類なので、対象データや分析目的が変わる場合はここを差し替える余地があります。 これはビューアーでそのまま関係タイプとして表示するための確定情報ではなく、後続で説明対象ペアを選ぶための LLM 由来の手がかりとして使います。</p>
 <p>入力には <code>data/comment_texts.json</code> が必要です。出力は <code>data/entity_opinions.json</code> です。</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/extract_entity_opinions.py <span class="at">--resume</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="ペア関係を抽出する" class="level3">
 <h3 class="anchored" data-anchor-id="ペア関係を抽出する">8. ペア関係を抽出する</h3>
-<p><code>scripts/extract_pair_relations.py</code> は、<code>data/entity_opinions.json</code> と <code>data/entity_graph.json</code> を使ってスコアの高いエンティティペアを選び、 両者が共起するコメントからペア単位の関係説明を LLM で作ります。</p>
+<p><code>scripts/extract_pair_relations.py</code> は、<code>data/entity_opinions.json</code> と <code>data/entity_graph.json</code> を使ってスコアの高いエンティティペアを選び、 ペア単位の関係説明を LLM で作ります。</p>
+<p>ペア選定では、7. で抽出した <code>relations</code> の件数、双方向に関係の手がかりがあるかどうか、 6. で作った <code>co_mention</code> エッジの重みを組み合わせてスコアを計算します。 閾値を超えたペアを基本対象にしつつ、グラフが分断される場合は、連結性を保つために低スコアでも補助的なペアを追加します。</p>
+<p>説明生成そのものでは、<code>relations</code> の関係タイプを直接プロンプトに渡すのではなく、 選ばれた 2 つのエンティティと、それらが共通して現れる L2 クラスタのコメント（共通クラスタがなければ両者の関連コメントの和集合）を LLM に渡します。 そのため <code>data/pair_relations.json</code> に入る説明は、ペア選定用の手がかりではなく、コメント本文に基づいて改めて生成された関係説明です。</p>
 <p>出力は <code>data/pair_relations.json</code> です。</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/extract_pair_relations.py <span class="at">--resume</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
