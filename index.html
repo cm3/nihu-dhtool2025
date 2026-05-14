@@ -104,7 +104,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#概要" id="toc-概要" class="nav-link active" data-scroll-target="#概要">概要</a></li>
   <li><a href="#関連リポジトリ" id="toc-関連リポジトリ" class="nav-link" data-scroll-target="#関連リポジトリ">関連リポジトリ</a></li>
-  <li><a href="#入力データ" id="toc-入力データ" class="nav-link" data-scroll-target="#入力データ">入力データ</a></li>
   <li><a href="#ワークフロー" id="toc-ワークフロー" class="nav-link" data-scroll-target="#ワークフロー">ワークフロー</a>
   <ul class="collapse">
   <li><a href="#csv-を広聴aiで処理する" id="toc-csv-を広聴aiで処理する" class="nav-link" data-scroll-target="#csv-を広聴aiで処理する">0. CSV を広聴AIで処理する</a></li>
@@ -153,6 +152,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><a href="https://www.nikkei.com/article/DGXZQOUA19C490Z10C25A2000000/">エネルギー基本計画のパブリックコメントでAI利用、4000件弱投稿か - 日本経済新聞</a></li>
 </ul>
 <p>そこで、<a href="https://www.enecho.meti.go.jp/committee/council/basic_policy_subcommittee/opinion/2024_public.html">公開されているパブリックコメント</a>と別途、情報公開請求で元データを入手し、大量の類似したコメントから、有意義なエンティティとその関係を抽出することを目標にしました。また、広聴AIのような既存のツールを使ったワークフローにすることで、実務家のワークフローに組み込める形を目指しました。</p>
+<p>入力は、コメント CSV を広聴AIのレポート生成パイプラインで処理して得た階層クラスタ、argument、embedding などの中間ファイルです。ここから L2 クラスタラベルと takeaway を使って entity linking 候補を作り、人手確認した結果を後続の関係抽出に使います。</p>
 <p>成果物は <a href="./pair_relation_viewer.html">議論ビューアー</a> で、エンティティ間のネットワークやコメントに基づくエンティティ単位・ペア単位の意見要約をブラウズできるようになっています。数が少ないが重要な意見を拾い上げることができているという点で一定の価値があるワークフローを構築できたのではないかと思っています。</p>
 <p>今後、学術的な検証や、評価、このワークフローを実務化や他の研究者が容易に利用できるようにするための工夫などに取り組んでいきたいと考えています。</p>
 </section>
@@ -164,58 +164,43 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><a href="https://github.com/cm3/keyword-curation">cm3/keyword-curation</a> keyword-curation リポジトリ。<a href="https://keyword-curation.vercel.app/">デモページ</a></li>
 </ul>
 </section>
-<section id="入力データ" class="level2">
-<h2 class="anchored" data-anchor-id="入力データ">入力データ</h2>
-<p>上流の入力は、コメント CSV を広聴AIのレポート生成パイプラインで処理した中間ファイルです。 このワークフローでは、広聴AIで生成した次のファイルをこのリポジトリの <code>data/</code> に配置してから各スクリプトを実行します。</p>
-<ul>
-<li><code>data/hierarchical_result.json</code>: 階層クラスタリング結果。L2 クラスタラベルと takeaway の入力として使います。</li>
-<li><code>data/hierarchical_clusters.csv</code>: argument と L1/L2 クラスタ ID の対応。コメント索引作成と局所クラスタの並び合わせに使います。</li>
-<li><code>data/final_result_with_comments.csv</code>: argument、コメント ID、元コメント本文。コメント索引とローカル本文参照ファイルの作成に使います。</li>
-<li><code>data/embeddings.pkl</code>: argument embedding。argument の局所クラスタ作成に使います。</li>
-</ul>
-<p>ここでいう <strong>L2 クラスタラベル</strong> は、広聴AIがコメントから抽出した argument を 階層クラスタリングしたときの第 2 階層クラスタにつけられた代表ラベルです。 個別コメント本文ではなく、複数の argument をまとめた論点カテゴリの短い説明として扱います。 <strong>takeaway</strong> は、同じクラスタの要点を文章で要約した補助文脈です。短い L2 クラスタラベルだけでは 出てこない具体的な技術名や制度名が takeaway に含まれることがあるため、このワークフローでは entity linking 候補抽出と人手確認の両方で参照します。</p>
-<p>このリポジトリでは、元コメント本文を含む <code>data/comment_texts.json</code> はGit 管理から除外しています。一方、要約、一部引用した元コメントはデータに含まれています。</p>
-</section>
 <section id="ワークフロー" class="level2">
 <h2 class="anchored" data-anchor-id="ワークフロー">ワークフロー</h2>
 <section id="csv-を広聴aiで処理する" class="level3">
 <h3 class="anchored" data-anchor-id="csv-を広聴aiで処理する">0. CSV を広聴AIで処理する</h3>
 <p>最初に、元のコメント CSV を広聴AIのレポート生成パイプラインに入力します。 この工程で、コメント本文から argument が抽出され、argument embedding が作られ、 argument の階層クラスタリングとクラスタラベル生成が行われます。</p>
-<p>このリポジトリのスクリプトは、広聴AIの処理そのものは実行せず、 <code>data/</code> に配置された広聴AIの中間ファイルを読みます。 広聴AIをリポジトリ直下で実行した場合、中間ファイルは通常 <code>apps/api/broadlistening/pipeline/outputs/</code> 以下の実行 ID ごとのディレクトリに出力されます。 必要なファイルの場所は、次のように探せます。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">find</span> /path/to/kouchou-ai/apps/api/broadlistening/pipeline/outputs <span class="dt">\</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-name</span> hierarchical_result.json <span class="dt">\</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">-o</span> <span class="at">-name</span> hierarchical_clusters.csv <span class="dt">\</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">-o</span> <span class="at">-name</span> final_result_with_comments.csv <span class="dt">\</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">-o</span> <span class="at">-name</span> embeddings.pkl</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>このリポジトリのスクリプトは、広聴AIの処理そのものは実行せず、 <code>data/</code> に配置された広聴AIの中間ファイルを読みます。 広聴AIをリポジトリ直下で実行した場合、中間ファイルは通常 <code>apps/api/broadlistening/pipeline/outputs/</code> 以下の実行 ID ごとのディレクトリに出力されます。</p>
 <p>対象の実行 ID のディレクトリを確認したら、必要な中間ファイルをこのリポジトリの <code>data/</code> にコピーします。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> /path/to/kouchou-ai/apps/api/broadlistening/pipeline/outputs/<span class="op">&lt;</span>run-id<span class="op">&gt;</span>/hierarchical_result.json data/</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> /path/to/kouchou-ai/apps/api/broadlistening/pipeline/outputs/<span class="op">&lt;</span>run-id<span class="op">&gt;</span>/hierarchical_clusters.csv data/</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> /path/to/kouchou-ai/apps/api/broadlistening/pipeline/outputs/<span class="op">&lt;</span>run-id<span class="op">&gt;</span>/final_result_with_comments.csv data/</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> /path/to/kouchou-ai/apps/api/broadlistening/pipeline/outputs/<span class="op">&lt;</span>run-id<span class="op">&gt;</span>/embeddings.pkl data/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> /path/to/kouchou-ai/apps/api/broadlistening/pipeline/outputs/<span class="op">&lt;</span>run-id<span class="op">&gt;</span>/hierarchical_result.json data/</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> /path/to/kouchou-ai/apps/api/broadlistening/pipeline/outputs/<span class="op">&lt;</span>run-id<span class="op">&gt;</span>/hierarchical_clusters.csv data/</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> /path/to/kouchou-ai/apps/api/broadlistening/pipeline/outputs/<span class="op">&lt;</span>run-id<span class="op">&gt;</span>/final_result_with_comments.csv data/</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> /path/to/kouchou-ai/apps/api/broadlistening/pipeline/outputs/<span class="op">&lt;</span>run-id<span class="op">&gt;</span>/embeddings.pkl data/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li><code>data/hierarchical_result.json</code> は、L2 クラスタラベルと takeaway を取り出して entity linking 候補生成に使います。</li>
 <li><code>data/hierarchical_clusters.csv</code> は、各 argument がどの L1/L2 クラスタに属するかを引くために使います。</li>
 <li><code>data/final_result_with_comments.csv</code> は、argument と元コメント本文、コメント ID を対応付けるために使います。</li>
 <li><code>data/embeddings.pkl</code> は、argument をより細かい局所クラスタに分けるために使います。</li>
 </ul>
+<p>ここでいう <strong>L2 クラスタラベル</strong> は、広聴AIがコメントから抽出した argument を 階層クラスタリングしたときの第 2 階層クラスタにつけられた代表ラベルです。 個別コメント本文ではなく、複数の argument をまとめた論点カテゴリの短い説明として扱います。 <strong>takeaway</strong> は、同じクラスタの要点を文章で要約した補助文脈です。短い L2 クラスタラベルだけでは 出てこない具体的な技術名や制度名が takeaway に含まれることがあるため、このワークフローでは entity linking 候補抽出と人手確認の両方で参照します。</p>
+<p>このリポジトリでは、広聴AIからコピーする上記 4 ファイルに加えて、 <code>data/final_result_with_comments.csv</code> から生成する <code>data/comment_texts.json</code> を Git 管理から除外しています。一方、要約、一部引用した元コメントはデータに含まれています。</p>
 </section>
 <section id="entity-linking-候補を作る" class="level3">
 <h3 class="anchored" data-anchor-id="entity-linking-候補を作る">1. Entity linking 候補を作る</h3>
 <p><code>scripts/prepare_entity_candidates_no_draft.py</code> は、<code>data/hierarchical_result.json</code> の L2 クラスタラベルと takeaway から Wikidata にリンクできそうな語句を LLM で抽出し、Wikidata Search API の候補から 最も適切な QID を選びます。</p>
 <p>出力は <code>data/data.json</code> です。各 item には L2 クラスタラベルに加えて takeaway も含めます。 この時点の結果は自動生成なので、<code>keyword-curation</code> で takeaway を参照しながら entity ID、ラベル、説明、リンク要否を人手確認します。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/prepare_entity_candidates_no_draft.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/prepare_entity_candidates_no_draft.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="entity-説明を整える" class="level3">
 <h3 class="anchored" data-anchor-id="entity-説明を整える">2. Entity 説明を整える</h3>
 <p><code>scripts/refine_entity_descriptions.py</code> は、キュレーション済み <code>data/data.json</code> の entity description を日本語で短く整えます。</p>
 <p>これは後続のグラフ表示や LLM による意見抽出で、エンティティの意味を安定させるための工程です。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/refine_entity_descriptions.py <span class="at">--only-weak</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/refine_entity_descriptions.py <span class="at">--only-weak</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="argument-の局所クラスタを作る" class="level3">
 <h3 class="anchored" data-anchor-id="argument-の局所クラスタを作る">3. Argument の局所クラスタを作る</h3>
 <p><code>scripts/build_argument_microclusters.py</code> は、argument embedding に Ward 法を適用し、 近い argument を局所クラスタにまとめます。ここでいう局所クラスタは、全体の階層クラスタとは別に、意味的に近い argument をさらに細かくまとめた小クラスタです。広聴AIの argument はコメントごとに抽出されるため、コメントが似ていた場合、意味的に重複した argument が多数抽出されます。今回扱ったパブコメデータは特にその点が問題になったためこのプロセスを挟んでいます。</p>
 <p>入力は <code>data/embeddings.pkl</code> と <code>data/hierarchical_clusters.csv</code> です。 出力は <code>data/argument_microclusters_t0.7.csv</code> です。各局所クラスタにはセントロイド argument が付き、 後続工程で代表的な論点を取り出しやすくします。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/build_argument_microclusters.py <span class="at">--threshold</span> 0.7</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/build_argument_microclusters.py <span class="at">--threshold</span> 0.7</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="コメントとクラスタの索引を作る" class="level3">
 <h3 class="anchored" data-anchor-id="コメントとクラスタの索引を作る">4. コメントとクラスタの索引を作る</h3>
@@ -225,7 +210,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>data/cluster_comment_index.csv</code>: 公開・分析用の索引</li>
 <li><code>data/comment_texts.json</code>: コメント本文のローカル参照用ファイル</li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/build_cluster_comment_index.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/build_cluster_comment_index.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="wikidata-property-path-を探索する" class="level3">
 <h3 class="anchored" data-anchor-id="wikidata-property-path-を探索する">5. Wikidata property path を探索する</h3>
@@ -235,7 +220,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>data/property_paths.tsv</code>: 発見した関係</li>
 <li><code>data/entity_props_cache.json</code>: Wikidata API 結果のキャッシュ</li>
 </ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/discover_property_paths.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/discover_property_paths.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="entity-graph-を作る" class="level3">
 <h3 class="anchored" data-anchor-id="entity-graph-を作る">6. Entity graph を作る</h3>
@@ -246,25 +231,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>wikidata_property</code>: Wikidata property による関係</li>
 </ul>
 <p>出力は <code>data/entity_graph.json</code> です。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/build_entity_graph.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/build_entity_graph.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="entity-ごとの意見を抽出する" class="level3">
 <h3 class="anchored" data-anchor-id="entity-ごとの意見を抽出する">7. Entity ごとの意見を抽出する</h3>
 <p><code>scripts/extract_entity_opinions.py</code> は、各エンティティが登場するクラスタに対応するコメントを集め、 そのエンティティへの立場、主要な意見、他エンティティとの関係候補を LLM で抽出します。</p>
 <p>入力には <code>data/comment_texts.json</code> が必要です。出力は <code>data/entity_opinions.json</code> です。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/extract_entity_opinions.py <span class="at">--resume</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/extract_entity_opinions.py <span class="at">--resume</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="ペア関係を抽出する" class="level3">
 <h3 class="anchored" data-anchor-id="ペア関係を抽出する">8. ペア関係を抽出する</h3>
 <p><code>scripts/extract_pair_relations.py</code> は、<code>data/entity_opinions.json</code> と <code>data/entity_graph.json</code> を使ってスコアの高いエンティティペアを選び、 両者が共起するコメントからペア単位の関係説明を LLM で作ります。</p>
 <p>出力は <code>data/pair_relations.json</code> です。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/extract_pair_relations.py <span class="at">--resume</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/extract_pair_relations.py <span class="at">--resume</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="議論ビューアーを生成する" class="level3">
 <h3 class="anchored" data-anchor-id="議論ビューアーを生成する">9. 議論ビューアーを生成する</h3>
 <p><code>scripts/build_pair_relation_viewer.py</code> は、<code>data/pair_relations.json</code> と <code>data/entity_opinions.json</code> をブラウザで読むための静的 HTML を生成します。</p>
 <p>出力は <code>pair_relation_viewer.html</code> です。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/build_pair_relation_viewer.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/build_pair_relation_viewer.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 <p>LLM を呼ぶ工程では <code>OPENAI_API_KEY</code> が必要です。</p>
 
