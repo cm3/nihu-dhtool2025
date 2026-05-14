@@ -15,7 +15,7 @@ title: "広聴AI / keyword-curation ワークフロー"
 
 そこで、[公開されているパブリックコメント](https://www.enecho.meti.go.jp/committee/council/basic_policy_subcommittee/opinion/2024_public.html)と別途、情報公開請求で元データを入手し、大量の類似したコメントから、有意義なエンティティとその関係を抽出することを目標にしました。また、広聴AIのような既存のツールを使ったワークフローにすることで、実務家のワークフローに組み込める形を目指しました。
 
-入力は、コメント CSV を広聴AIのレポート生成パイプラインで処理して得た階層クラスタ、argument、embedding などの中間ファイルです。ここから L2 クラスタラベルと takeaway を使って entity linking 候補を作り、人手確認した結果を後続の関係抽出に使います。
+入力は、コメント CSV を広聴AIのレポート生成パイプラインで処理して得た階層クラスタ、argument、embedding などの中間ファイルです。ここから L2 クラスタラベルと takeaway を使って entity linking 候補を作り、人手確認した結果を後続の関係抽出に使います。`keyword-curation` 用の JSON では、この補助文脈を item の `description` として渡します。
 
 成果物は [議論ビューアー](./pair_relation_viewer.html) で、エンティティ間のネットワークやコメントに基づくエンティティ単位・ペア単位の意見要約をブラウズできるようになっています。数が少ないが重要な意見を拾い上げることができているという点で一定の価値があるワークフローを構築できたのではないかと思っています。
 
@@ -92,8 +92,8 @@ L2 クラスタラベルと takeaway から
 Wikidata にリンクできそうな語句を LLM で抽出し、Wikidata Search API の候補から
 最も適切な QID を選びます。
 
-出力は `data/data.json` です。各 item には L2 クラスタラベルに加えて takeaway も含めます。
-この時点の結果は自動生成なので、`keyword-curation` で takeaway を参照しながら
+出力は `data/data.json` です。各 item には L2 クラスタラベルに加えて、広聴AIの takeaway を `description` として含めます。
+この時点の結果は自動生成なので、`keyword-curation` で `description` を参照しながら
 entity ID、ラベル、説明、リンク要否を人手確認します。
 
 ```bash
@@ -228,3 +228,7 @@ python scripts/build_pair_relation_viewer.py
 ---
 
 LLM を呼ぶ工程では `OPENAI_API_KEY` が必要です。
+
+## 謝辞
+
+このツール構築は [人間文化研究機構 デジタル・ヒューマニティーズ促進事業](https://dh.nihu.jp/news/post/20260507) の支援を受けています。

@@ -395,7 +395,7 @@ def main():
             {
                 "id": cl["id"],
                 "label": cl["label"],
-                "takeaway": cluster_takeaway(cl),
+                "description": cluster_takeaway(cl),
             }
             for cl in clusters
         ],
