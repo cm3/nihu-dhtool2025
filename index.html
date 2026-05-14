@@ -169,6 +169,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="csv-を広聴aiで処理する" class="level3">
 <h3 class="anchored" data-anchor-id="csv-を広聴aiで処理する">0. CSV を広聴AIで処理する</h3>
 <p>最初に、元のコメント CSV を広聴AIのレポート生成パイプラインに入力します。 この工程で、コメント本文から argument が抽出され、argument embedding が作られ、 argument の階層クラスタリングとクラスタラベル生成が行われます。</p>
+<p>入力 CSV の列については、広聴AIへの投入経路によって少し扱いが変わります。 パイプラインに直接 CSV を置いて実行する場合、処理上必要になる最小列は、 広聴AIの処理対象を識別する <code>comment-id</code> と、LLM に渡すコメント本文である <code>comment-body</code> です。 Web UI から CSV をアップロードする場合は、<code>id</code> または <code>comment-id</code> がなければ画面側で ID が自動採番されます。 一方、入力プラグインや Web UI/API の内部データでは <code>source</code> と <code>url</code> も標準的な列として扱われるため、 再現性やソースリンクを保つには <code>source</code> と <code>url</code> も含めておくのが安全です。 この実験で使った入力 CSV も、以下の列を持っていました。</p>
+<ul>
+<li><code>comment-id</code>: コメント単位の ID。広聴AIの <code>relations.csv</code> で抽出 argument と結び付けられ、<code>final_result_with_comments.csv</code> の <code>comment-id</code> にも残ります。</li>
+<li><code>comment-body</code>: 元コメント本文。広聴AIの argument 抽出に使われ、<code>final_result_with_comments.csv</code> では <code>original-comment</code> として出力されます。このワークフローではそこから <code>data/comment_texts.json</code> を生成します。</li>
+<li><code>source</code>: コメントの由来を表す列。パイプライン直接実行では必須ではありませんが、入力プラグインでは標準的に出力されます。存在する場合、広聴AIの <code>final_result_with_comments.csv</code> に残ります。</li>
+<li><code>url</code>: 元コメントや出典への URL を表す列。パイプライン直接実行では必須ではありませんが、ソースリンク機能を使う場合は必要です。存在する場合、広聴AIの <code>final_result_with_comments.csv</code> に残り、設定によっては <code>hierarchical_result.json</code> の argument 側にも <code>url</code> として入ります。</li>
+<li><code>attribute_...</code>: コメントに付けたい属性列。列名が <code>attribute_</code> で始まるものは、広聴AIの集約段階で属性として扱われます。<code>final_result_with_comments.csv</code> には元の列名のまま残り、<code>hierarchical_result.json</code> では <code>attribute_</code> を外した名前で <code>arguments[].attributes</code> に入ります。</li>
+</ul>
+<p>つまり、<code>comment-id</code> と <code>comment-body</code> が処理上の最小構成で、 <code>source</code> と <code>url</code> は広聴AIの画面/API/プラグイン運用では実質的に標準列として扱うのがよい列です。 それ以外の列はコメント本文とは別のメタデータとして後段の中間ファイルに保持されます。 ただし、このワークフローのスクリプトが直接使うのは主に argument、クラスタ情報、 コメント ID、元コメント本文であり、<code>source</code> や <code>attribute_...</code> は広聴AI由来の補助情報として残しているものです。</p>
 <p>このリポジトリのスクリプトは、広聴AIの処理そのものは実行せず、 <code>data/</code> に配置された広聴AIの中間ファイルを読みます。 広聴AIをリポジトリ直下で実行した場合、中間ファイルは通常 <code>apps/api/broadlistening/pipeline/outputs/</code> 以下の実行 ID ごとのディレクトリに出力されます。</p>
 <p>対象の実行 ID のディレクトリを確認したら、必要な中間ファイルをこのリポジトリの <code>data/</code> にコピーします。</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> /path/to/kouchou-ai/apps/api/broadlistening/pipeline/outputs/<span class="op">&lt;</span>run-id<span class="op">&gt;</span>/hierarchical_result.json data/</span>
