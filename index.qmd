@@ -35,6 +35,26 @@ title: "広聴AI / keyword-curation ワークフロー"
 この工程で、コメント本文から argument が抽出され、argument embedding が作られ、
 argument の階層クラスタリングとクラスタラベル生成が行われます。
 
+入力 CSV の列については、広聴AIへの投入経路によって少し扱いが変わります。
+パイプラインに直接 CSV を置いて実行する場合、処理上必要になる最小列は、
+広聴AIの処理対象を識別する `comment-id` と、LLM に渡すコメント本文である `comment-body` です。
+Web UI から CSV をアップロードする場合は、`id` または `comment-id` がなければ画面側で ID が自動採番されます。
+一方、入力プラグインや Web UI/API の内部データでは `source` と `url` も標準的な列として扱われるため、
+再現性やソースリンクを保つには `source` と `url` も含めておくのが安全です。
+この実験で使った入力 CSV も、以下の列を持っていました。
+
+- `comment-id`: コメント単位の ID。広聴AIの `relations.csv` で抽出 argument と結び付けられ、`final_result_with_comments.csv` の `comment-id` にも残ります。
+- `comment-body`: 元コメント本文。広聴AIの argument 抽出に使われ、`final_result_with_comments.csv` では `original-comment` として出力されます。このワークフローではそこから `data/comment_texts.json` を生成します。
+- `source`: コメントの由来を表す列。パイプライン直接実行では必須ではありませんが、入力プラグインでは標準的に出力されます。存在する場合、広聴AIの `final_result_with_comments.csv` に残ります。
+- `url`: 元コメントや出典への URL を表す列。パイプライン直接実行では必須ではありませんが、ソースリンク機能を使う場合は必要です。存在する場合、広聴AIの `final_result_with_comments.csv` に残り、設定によっては `hierarchical_result.json` の argument 側にも `url` として入ります。
+- `attribute_...`: コメントに付けたい属性列。列名が `attribute_` で始まるものは、広聴AIの集約段階で属性として扱われます。`final_result_with_comments.csv` には元の列名のまま残り、`hierarchical_result.json` では `attribute_` を外した名前で `arguments[].attributes` に入ります。
+
+つまり、`comment-id` と `comment-body` が処理上の最小構成で、
+`source` と `url` は広聴AIの画面/API/プラグイン運用では実質的に標準列として扱うのがよい列です。
+それ以外の列はコメント本文とは別のメタデータとして後段の中間ファイルに保持されます。
+ただし、このワークフローのスクリプトが直接使うのは主に argument、クラスタ情報、
+コメント ID、元コメント本文であり、`source` や `attribute_...` は広聴AI由来の補助情報として残しているものです。
+
 このリポジトリのスクリプトは、広聴AIの処理そのものは実行せず、
 `data/` に配置された広聴AIの中間ファイルを読みます。
 広聴AIをリポジトリ直下で実行した場合、中間ファイルは通常
