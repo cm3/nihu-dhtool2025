@@ -137,12 +137,17 @@ python scripts/discover_property_paths.py
 ### 6. Entity graph を作る
 
 `scripts/build_entity_graph.py` は、`data/data.json` と `data/property_paths.tsv` から
-エンティティ中心のグラフを作ります。
+エンティティ中心のグラフを作ります。ここでのノードは、`keyword-curation` で確認した
+`entity_id` 単位の統制済みエンティティです。同じエンティティが複数の L2 クラスタに現れた場合は、
+その `item_id` や表記ゆれをノード側に集約します。
 
 グラフには 2 種類のエッジがあります。
 
-- `co_mention`: 同一 L2 ラベル内での共起
-- `wikidata_property`: Wikidata property による関係
+- `co_mention`: 同一 L2 ラベル内での共起。コメント上で同じ論点カテゴリに現れたエンティティ同士を結びます。
+- `wikidata_property`: Wikidata property による関係。`P31`、`P279`、`P361`、`P527` などから見つかった直接関係や共通上位クラスに基づきます。
+
+この段階のエッジは、コメント本文を読んで説明した関係ではなく、共起と Wikidata に基づく構造的な手がかりです。
+後続のペア関係抽出では、この `co_mention` の重みが説明対象ペアの選定に使われます。
 
 出力は `data/entity_graph.json` です。
 
@@ -154,6 +159,14 @@ python scripts/build_entity_graph.py
 
 `scripts/extract_entity_opinions.py` は、各エンティティが登場するクラスタに対応するコメントを集め、
 そのエンティティへの立場、主要な意見、他エンティティとの関係候補を LLM で抽出します。
+入力としては、注目エンティティ、そのエンティティが出る L2 クラスタのコメント、
+キュレーション済みエンティティ一覧を渡します。
+
+出力の `relations` は、コメント本文から見て「このエンティティは別のどのエンティティと関係して語られているか」を示す候補です。
+関係タイプには `promotes`、`opposes`、`requires`、`replaces`、`risk_of`、`compared_with`、`causes`、`solution_for` があります。
+この関係タイプの一覧は、`scripts/extract_entity_opinions.py` のプロンプトに固定で書いているもので、データから自動的に作っているわけではありません。
+現在の一覧はエネルギー政策コメントを想定した作業用の分類なので、対象データや分析目的が変わる場合はここを差し替える余地があります。
+これはビューアーでそのまま関係タイプとして表示するための確定情報ではなく、後続で説明対象ペアを選ぶための LLM 由来の手がかりとして使います。
 
 入力には `data/comment_texts.json` が必要です。出力は `data/entity_opinions.json` です。
 
@@ -165,7 +178,15 @@ python scripts/extract_entity_opinions.py --resume
 
 `scripts/extract_pair_relations.py` は、`data/entity_opinions.json` と
 `data/entity_graph.json` を使ってスコアの高いエンティティペアを選び、
-両者が共起するコメントからペア単位の関係説明を LLM で作ります。
+ペア単位の関係説明を LLM で作ります。
+
+ペア選定では、7. で抽出した `relations` の件数、双方向に関係の手がかりがあるかどうか、
+6. で作った `co_mention` エッジの重みを組み合わせてスコアを計算します。
+閾値を超えたペアを基本対象にしつつ、グラフが分断される場合は、連結性を保つために低スコアでも補助的なペアを追加します。
+
+説明生成そのものでは、`relations` の関係タイプを直接プロンプトに渡すのではなく、
+選ばれた 2 つのエンティティと、それらが共通して現れる L2 クラスタのコメント（共通クラスタがなければ両者の関連コメントの和集合）を LLM に渡します。
+そのため `data/pair_relations.json` に入る説明は、ペア選定用の手がかりではなく、コメント本文に基づいて改めて生成された関係説明です。
 
 出力は `data/pair_relations.json` です。
 
