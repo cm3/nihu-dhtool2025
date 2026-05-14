@@ -117,6 +117,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#ペア関係を抽出する" id="toc-ペア関係を抽出する" class="nav-link" data-scroll-target="#ペア関係を抽出する">8. ペア関係を抽出する</a></li>
   <li><a href="#議論ビューアーを生成する" id="toc-議論ビューアーを生成する" class="nav-link" data-scroll-target="#議論ビューアーを生成する">9. 議論ビューアーを生成する</a></li>
   </ul></li>
+  <li><a href="#謝辞" id="toc-謝辞" class="nav-link" data-scroll-target="#謝辞">謝辞</a></li>
   </ul>
 </nav>
     </div>
@@ -152,7 +153,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><a href="https://www.nikkei.com/article/DGXZQOUA19C490Z10C25A2000000/">エネルギー基本計画のパブリックコメントでAI利用、4000件弱投稿か - 日本経済新聞</a></li>
 </ul>
 <p>そこで、<a href="https://www.enecho.meti.go.jp/committee/council/basic_policy_subcommittee/opinion/2024_public.html">公開されているパブリックコメント</a>と別途、情報公開請求で元データを入手し、大量の類似したコメントから、有意義なエンティティとその関係を抽出することを目標にしました。また、広聴AIのような既存のツールを使ったワークフローにすることで、実務家のワークフローに組み込める形を目指しました。</p>
-<p>入力は、コメント CSV を広聴AIのレポート生成パイプラインで処理して得た階層クラスタ、argument、embedding などの中間ファイルです。ここから L2 クラスタラベルと takeaway を使って entity linking 候補を作り、人手確認した結果を後続の関係抽出に使います。</p>
+<p>入力は、コメント CSV を広聴AIのレポート生成パイプラインで処理して得た階層クラスタ、argument、embedding などの中間ファイルです。ここから L2 クラスタラベルと takeaway を使って entity linking 候補を作り、人手確認した結果を後続の関係抽出に使います。<code>keyword-curation</code> 用の JSON では、この補助文脈を item の <code>description</code> として渡します。</p>
 <p>成果物は <a href="./pair_relation_viewer.html">議論ビューアー</a> で、エンティティ間のネットワークやコメントに基づくエンティティ単位・ペア単位の意見要約をブラウズできるようになっています。数が少ないが重要な意見を拾い上げることができているという点で一定の価値があるワークフローを構築できたのではないかと思っています。</p>
 <p>今後、学術的な検証や、評価、このワークフローを実務化や他の研究者が容易に利用できるようにするための工夫などに取り組んでいきたいと考えています。</p>
 </section>
@@ -196,7 +197,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="entity-linking-候補を作る" class="level3">
 <h3 class="anchored" data-anchor-id="entity-linking-候補を作る">1. Entity linking 候補を作る</h3>
 <p><code>scripts/prepare_entity_candidates_no_draft.py</code> は、<code>data/hierarchical_result.json</code> の L2 クラスタラベルと takeaway から Wikidata にリンクできそうな語句を LLM で抽出し、Wikidata Search API の候補から 最も適切な QID を選びます。</p>
-<p>出力は <code>data/data.json</code> です。各 item には L2 クラスタラベルに加えて takeaway も含めます。 この時点の結果は自動生成なので、<code>keyword-curation</code> で takeaway を参照しながら entity ID、ラベル、説明、リンク要否を人手確認します。</p>
+<p>出力は <code>data/data.json</code> です。各 item には L2 クラスタラベルに加えて、広聴AIの takeaway を <code>description</code> として含めます。 この時点の結果は自動生成なので、<code>keyword-curation</code> で <code>description</code> を参照しながら entity ID、ラベル、説明、リンク要否を人手確認します。</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/prepare_entity_candidates_no_draft.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="entity-説明を整える" class="level3">
@@ -265,9 +266,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/build_pair_relation_viewer.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 <p>LLM を呼ぶ工程では <code>OPENAI_API_KEY</code> が必要です。</p>
-
-
 </section>
+</section>
+<section id="謝辞" class="level2">
+<h2 class="anchored" data-anchor-id="謝辞">謝辞</h2>
+<p>このツール構築は <a href="https://dh.nihu.jp/news/post/20260507">人間文化研究機構 デジタル・ヒューマニティーズ促進事業</a> の支援を受けています。</p>
+
+
 </section>
 
 </main> <!-- /main -->
