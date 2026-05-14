@@ -49,8 +49,7 @@ git push origin gh-pages
 
 ## データに関する注意
 
-- `data/comment_texts.json` は元コメント本文を含むため Git 管理から除外しています。
-- 広聴AIからコピーする `data/hierarchical_result.json`、`data/hierarchical_clusters.csv`、`data/final_result_with_comments.csv`、`data/embeddings.pkl` も Git 管理から除外しています。
+- 広聴AIからコピーする `data/hierarchical_result.json`、`data/hierarchical_clusters.csv`、`data/final_result_with_comments.csv`、`data/embeddings.pkl` と、`data/final_result_with_comments.csv` から生成する `data/comment_texts.json` は Git 管理から除外しています。
 - `data/` 以下の派生データにもコメント由来の要約・抜粋が含まれる場合があります。
 - 公開前に、元データの公開条件と個人情報の有無を確認してください。
 
