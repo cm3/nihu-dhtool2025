@@ -146,14 +146,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><a href="./index_en.html">English version</a></p>
 <section id="概要" class="level2">
 <h2 class="anchored" data-anchor-id="概要">概要</h2>
-<p>このディレクトリは、CSV 形式のコメントデータを広聴AIのレポート生成パイプラインにかけた中間出力を起点に、<a href="https://keyword-curation.vercel.app/"><code>keyword-curation</code></a> で人手確認した entity linking 結果を使って、情報公開請求を行なった第7次エネルギー基本計画（令和7年2月）のパブリックコメントに出てくるエンティティとその関係を整理するための作業用ワークフローです。</p>
+<p>このディレクトリは、情報公開請求で入手した第7次エネルギー基本計画（令和7年2月）のパブリックコメント元データのうち冒頭 3000 件を CSV として広聴AIのレポート生成パイプラインにかけ、その中間出力を起点に、<a href="https://keyword-curation.vercel.app/"><code>keyword-curation</code></a> で人手確認した entity linking 結果を使って、コメントに出てくるエンティティとその関係を整理するための作業用ワークフローです。</p>
 <p>これまで、私（人間文化研究機構 亀田尭宙）は、千葉大学の石井康平氏と共に<a href="https://ipsj.ixsq.nii.ac.jp/records/2006190">環境政策形成に関する審議会の議事録分析に基づく主題構成比較</a>などで、広聴AIと類似したBERTopicを用いた政策形成過程の分析を、議事録、パブコメ、政策文書などの資料について環境政策を対象に行なってきました。</p>
 <p>この幅を広げるにあたって、エネルギー政策の政策形成過程に着目した時に、以下のような話題がありました。</p>
 <ul>
 <li><a href="https://www.asahi.com/articles/DA3S16152501.html">エネ基パブコメに４．１万件超　過去最多　原発へ「懸念の声」、計画に反映：朝日新聞</a></li>
 <li><a href="https://www.nikkei.com/article/DGXZQOUA19C490Z10C25A2000000/">エネルギー基本計画のパブリックコメントでAI利用、4000件弱投稿か - 日本経済新聞</a></li>
 </ul>
-<p>そこで、<a href="https://www.enecho.meti.go.jp/committee/council/basic_policy_subcommittee/opinion/2024_public.html">公開されているパブリックコメント</a>と別途、情報公開請求で元データを入手し、大量の類似したコメントから、有意義なエンティティとその関係を抽出することを目標にしました。また、広聴AIのような既存のツールを使ったワークフローにすることで、実務家のワークフローに組み込める形を目指しました。</p>
+<p>そこで、公開版の情報を参照しつつ、分析には別途情報公開請求で入手した元データを用いました。このワークフローで実際に処理したのは、その元データの冒頭 3000 件です。大量の類似したコメントから、有意義なエンティティとその関係を抽出することを目標にしました。また、広聴AIのような既存のツールを使ったワークフローにすることで、実務家のワークフローに組み込める形を目指しました。</p>
 <p>入力は、コメント CSV を広聴AIのレポート生成パイプラインで処理して得た階層クラスタ、argument、embedding などの中間ファイルです。ここから L2 クラスタラベルと takeaway を使って entity linking 候補を作り、人手確認した結果を後続の関係抽出に使います。<code>keyword-curation</code> 用の JSON では、この補助文脈を item の <code>description</code> として渡します。</p>
 <p>成果物は <a href="./dataset/energy-plan-pubcom-sample/pair_relation_viewer.html">議論ビューアー</a> で、エンティティ間のネットワークやコメントに基づくエンティティ単位・ペア単位の意見要約をブラウズできるようになっています。数が少ないが重要な意見を拾い上げることができているという点で一定の価値があるワークフローを構築できたのではないかと思っています。</p>
 <p>今後、学術的な検証や、評価、このワークフローを実務化や他の研究者が容易に利用できるようにするための工夫などに取り組んでいきたいと考えています。</p>
