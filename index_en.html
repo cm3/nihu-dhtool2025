@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>広聴AI / keyword-curation ワークフロー – 広聴AI keyword-curation ワークフロー</title>
+<title>Kouchou AI / keyword-curation workflow – 広聴AI keyword-curation ワークフロー</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -102,22 +102,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#概要" id="toc-概要" class="nav-link active" data-scroll-target="#概要">概要</a></li>
-  <li><a href="#関連リポジトリ" id="toc-関連リポジトリ" class="nav-link" data-scroll-target="#関連リポジトリ">関連リポジトリ</a></li>
-  <li><a href="#ワークフロー" id="toc-ワークフロー" class="nav-link" data-scroll-target="#ワークフロー">ワークフロー</a>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
+  <li><a href="#related-repositories" id="toc-related-repositories" class="nav-link" data-scroll-target="#related-repositories">Related Repositories</a></li>
+  <li><a href="#workflow" id="toc-workflow" class="nav-link" data-scroll-target="#workflow">Workflow</a>
   <ul class="collapse">
-  <li><a href="#csv-を広聴aiで処理する" id="toc-csv-を広聴aiで処理する" class="nav-link" data-scroll-target="#csv-を広聴aiで処理する">0. CSV を広聴AIで処理する</a></li>
-  <li><a href="#entity-linking-候補を作る" id="toc-entity-linking-候補を作る" class="nav-link" data-scroll-target="#entity-linking-候補を作る">1. Entity linking 候補を作る</a></li>
-  <li><a href="#entity-説明を整える" id="toc-entity-説明を整える" class="nav-link" data-scroll-target="#entity-説明を整える">2. Entity 説明を整える</a></li>
-  <li><a href="#argument-の局所クラスタを作る" id="toc-argument-の局所クラスタを作る" class="nav-link" data-scroll-target="#argument-の局所クラスタを作る">3. Argument の局所クラスタを作る</a></li>
-  <li><a href="#コメントとクラスタの索引を作る" id="toc-コメントとクラスタの索引を作る" class="nav-link" data-scroll-target="#コメントとクラスタの索引を作る">4. コメントとクラスタの索引を作る</a></li>
-  <li><a href="#wikidata-property-path-を探索する" id="toc-wikidata-property-path-を探索する" class="nav-link" data-scroll-target="#wikidata-property-path-を探索する">5. Wikidata property path を探索する</a></li>
-  <li><a href="#entity-graph-を作る" id="toc-entity-graph-を作る" class="nav-link" data-scroll-target="#entity-graph-を作る">6. Entity graph を作る</a></li>
-  <li><a href="#entity-ごとの意見を抽出する" id="toc-entity-ごとの意見を抽出する" class="nav-link" data-scroll-target="#entity-ごとの意見を抽出する">7. Entity ごとの意見を抽出する</a></li>
-  <li><a href="#ペア関係を抽出する" id="toc-ペア関係を抽出する" class="nav-link" data-scroll-target="#ペア関係を抽出する">8. ペア関係を抽出する</a></li>
-  <li><a href="#議論ビューアーを生成する" id="toc-議論ビューアーを生成する" class="nav-link" data-scroll-target="#議論ビューアーを生成する">9. 議論ビューアーを生成する</a></li>
+  <li><a href="#process-the-csv-with-kouchou-ai" id="toc-process-the-csv-with-kouchou-ai" class="nav-link" data-scroll-target="#process-the-csv-with-kouchou-ai">0. Process the CSV with Kouchou AI</a></li>
+  <li><a href="#generate-entity-linking-candidates" id="toc-generate-entity-linking-candidates" class="nav-link" data-scroll-target="#generate-entity-linking-candidates">1. Generate entity-linking candidates</a></li>
+  <li><a href="#refine-entity-descriptions" id="toc-refine-entity-descriptions" class="nav-link" data-scroll-target="#refine-entity-descriptions">2. Refine entity descriptions</a></li>
+  <li><a href="#create-local-clusters-of-arguments" id="toc-create-local-clusters-of-arguments" class="nav-link" data-scroll-target="#create-local-clusters-of-arguments">3. Create local clusters of arguments</a></li>
+  <li><a href="#build-an-index-of-comments-and-clusters" id="toc-build-an-index-of-comments-and-clusters" class="nav-link" data-scroll-target="#build-an-index-of-comments-and-clusters">4. Build an index of comments and clusters</a></li>
+  <li><a href="#discover-wikidata-property-paths" id="toc-discover-wikidata-property-paths" class="nav-link" data-scroll-target="#discover-wikidata-property-paths">5. Discover Wikidata property paths</a></li>
+  <li><a href="#build-the-entity-graph" id="toc-build-the-entity-graph" class="nav-link" data-scroll-target="#build-the-entity-graph">6. Build the entity graph</a></li>
+  <li><a href="#extract-opinions-for-each-entity" id="toc-extract-opinions-for-each-entity" class="nav-link" data-scroll-target="#extract-opinions-for-each-entity">7. Extract opinions for each entity</a></li>
+  <li><a href="#extract-pair-level-relationships" id="toc-extract-pair-level-relationships" class="nav-link" data-scroll-target="#extract-pair-level-relationships">8. Extract pair-level relationships</a></li>
+  <li><a href="#generate-the-discussion-viewer" id="toc-generate-the-discussion-viewer" class="nav-link" data-scroll-target="#generate-the-discussion-viewer">9. Generate the discussion viewer</a></li>
   </ul></li>
-  <li><a href="#謝辞" id="toc-謝辞" class="nav-link" data-scroll-target="#謝辞">謝辞</a></li>
+  <li><a href="#acknowledgements" id="toc-acknowledgements" class="nav-link" data-scroll-target="#acknowledgements">Acknowledgements</a></li>
   </ul>
 </nav>
     </div>
@@ -126,7 +126,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">広聴AI / keyword-curation ワークフロー</h1>
+<h1 class="title">Kouchou AI / keyword-curation workflow</h1>
 </div>
 
 
@@ -143,135 +143,136 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p><a href="./index_en.html">English version</a></p>
-<section id="概要" class="level2">
-<h2 class="anchored" data-anchor-id="概要">概要</h2>
-<p>このディレクトリは、CSV 形式のコメントデータを広聴AIのレポート生成パイプラインにかけた中間出力を起点に、<a href="https://keyword-curation.vercel.app/"><code>keyword-curation</code></a> で人手確認した entity linking 結果を使って、情報公開請求を行なった第7次エネルギー基本計画（令和7年2月）のパブリックコメントに出てくるエンティティとその関係を整理するための作業用ワークフローです。</p>
-<p>これまで、私（人間文化研究機構 亀田尭宙）は、千葉大学の石井康平氏と共に<a href="https://ipsj.ixsq.nii.ac.jp/records/2006190">環境政策形成に関する審議会の議事録分析に基づく主題構成比較</a>などで、広聴AIと類似したBERTopicを用いた政策形成過程の分析を、議事録、パブコメ、政策文書などの資料について環境政策を対象に行なってきました。</p>
-<p>この幅を広げるにあたって、エネルギー政策の政策形成過程に着目した時に、以下のような話題がありました。</p>
+<p><a href="./index.html">日本語版</a></p>
+<section id="overview" class="level2">
+<h2 class="anchored" data-anchor-id="overview">Overview</h2>
+<p>This directory contains a working workflow for organizing the entities and relationships that appear in public comments on Japan’s Seventh Strategic Energy Plan (February 2025), obtained through a freedom-of-information request. The workflow starts from intermediate outputs produced by running CSV comment data through the Kouchou AI report-generation pipeline, and then uses entity-linking results manually checked with <a href="https://keyword-curation.vercel.app/"><code>keyword-curation</code></a>.</p>
+<p>In previous work, I, Takahiro Kameda at the National Institutes for the Humanities, have collaborated with Kohei Ishii of Chiba University on analyses of environmental policy formation processes using BERTopic and related methods, including <a href="https://ipsj.ixsq.nii.ac.jp/records/2006190">topic-composition comparisons based on minutes from environmental policy councils</a>. Those analyses have covered minutes, public comments, policy documents, and other environmental-policy materials.</p>
+<p>In expanding that line of work to the policy-formation process around energy policy, several recent public discussions were especially relevant:</p>
 <ul>
-<li><a href="https://www.asahi.com/articles/DA3S16152501.html">エネ基パブコメに４．１万件超　過去最多　原発へ「懸念の声」、計画に反映：朝日新聞</a></li>
-<li><a href="https://www.nikkei.com/article/DGXZQOUA19C490Z10C25A2000000/">エネルギー基本計画のパブリックコメントでAI利用、4000件弱投稿か - 日本経済新聞</a></li>
+<li><a href="https://www.asahi.com/articles/DA3S16152501.html">More than 41,000 public comments on the Strategic Energy Plan, a record high; concerns about nuclear power reflected in the plan: Asahi Shimbun</a></li>
+<li><a href="https://www.nikkei.com/article/DGXZQOUA19C490Z10C25A2000000/">Possible AI use in public comments on the Strategic Energy Plan, nearly 4,000 submissions: Nikkei</a></li>
 </ul>
-<p>そこで、<a href="https://www.enecho.meti.go.jp/committee/council/basic_policy_subcommittee/opinion/2024_public.html">公開されているパブリックコメント</a>と別途、情報公開請求で元データを入手し、大量の類似したコメントから、有意義なエンティティとその関係を抽出することを目標にしました。また、広聴AIのような既存のツールを使ったワークフローにすることで、実務家のワークフローに組み込める形を目指しました。</p>
-<p>入力は、コメント CSV を広聴AIのレポート生成パイプラインで処理して得た階層クラスタ、argument、embedding などの中間ファイルです。ここから L2 クラスタラベルと takeaway を使って entity linking 候補を作り、人手確認した結果を後続の関係抽出に使います。<code>keyword-curation</code> 用の JSON では、この補助文脈を item の <code>description</code> として渡します。</p>
-<p>成果物は <a href="./dataset/energy-plan-pubcom-sample/pair_relation_viewer.html">議論ビューアー</a> で、エンティティ間のネットワークやコメントに基づくエンティティ単位・ペア単位の意見要約をブラウズできるようになっています。数が少ないが重要な意見を拾い上げることができているという点で一定の価値があるワークフローを構築できたのではないかと思っています。</p>
-<p>今後、学術的な検証や、評価、このワークフローを実務化や他の研究者が容易に利用できるようにするための工夫などに取り組んでいきたいと考えています。</p>
+<p>Against that background, I used both <a href="https://www.enecho.meti.go.jp/committee/council/basic_policy_subcommittee/opinion/2024_public.html">the publicly available public comments</a> and raw data obtained separately through a freedom-of-information request. The goal was to extract meaningful entities and relationships from a large set of highly similar comments. I also aimed to make the workflow compatible with practitioner workflows by building it around existing tools such as Kouchou AI.</p>
+<p>The input is a set of intermediate files generated by processing a comment CSV through the Kouchou AI report-generation pipeline: hierarchical clusters, arguments, embeddings, and related files. From these, the workflow uses L2 cluster labels and takeaways to generate entity-linking candidates, then uses manually checked results for downstream relationship extraction. In the JSON file used by <code>keyword-curation</code>, this auxiliary context is passed as each item’s <code>description</code>.</p>
+<p>The output is a <a href="./dataset/energy-plan-pubcom-sample/pair_relation_viewer.html">discussion viewer</a> that lets users browse a network of entities and entity-level or pair-level opinion summaries based on the comments. The workflow seems to have some value in that it can surface a small number of important opinions that would otherwise be difficult to identify.</p>
+<p>Future work includes academic validation, evaluation, and improvements that would make this workflow easier for practitioners and other researchers to use in real settings.</p>
 </section>
-<section id="関連リポジトリ" class="level2">
-<h2 class="anchored" data-anchor-id="関連リポジトリ">関連リポジトリ</h2>
+<section id="related-repositories" class="level2">
+<h2 class="anchored" data-anchor-id="related-repositories">Related Repositories</h2>
 <ul>
-<li><a href="https://github.com/cm3/nihu-dhtool2025">cm3/nihu-dhtool2025</a> この説明に加えてスクリプトやデータを含む本リポジトリ。</li>
-<li><a href="https://github.com/digitaldemocracy2030/kouchou-ai">digitaldemocracy2030/kouchou-ai</a> 広聴AIのリポジトリ。</li>
-<li><a href="https://github.com/cm3/keyword-curation">cm3/keyword-curation</a> keyword-curation リポジトリ。<a href="https://keyword-curation.vercel.app/">デモページ</a></li>
+<li><a href="https://github.com/cm3/nihu-dhtool2025">cm3/nihu-dhtool2025</a>: this repository, including the scripts, data, and this explanation.</li>
+<li><a href="https://github.com/digitaldemocracy2030/kouchou-ai">digitaldemocracy2030/kouchou-ai</a>: the Kouchou AI repository.</li>
+<li><a href="https://github.com/cm3/keyword-curation">cm3/keyword-curation</a>: the keyword-curation repository. See also the <a href="https://keyword-curation.vercel.app/">demo page</a>.</li>
 </ul>
 </section>
-<section id="ワークフロー" class="level2">
-<h2 class="anchored" data-anchor-id="ワークフロー">ワークフロー</h2>
-<section id="csv-を広聴aiで処理する" class="level3">
-<h3 class="anchored" data-anchor-id="csv-を広聴aiで処理する">0. CSV を広聴AIで処理する</h3>
-<p>最初に、元のコメント CSV を広聴AIのレポート生成パイプラインに入力します。 この工程で、コメント本文から argument が抽出され、argument embedding が作られ、 argument の階層クラスタリングとクラスタラベル生成が行われます。</p>
-<p>入力 CSV の列については、広聴AIへの投入経路によって少し扱いが変わります。 パイプラインに直接 CSV を置いて実行する場合、処理上必要になる最小列は、 広聴AIの処理対象を識別する <code>comment-id</code> と、LLM に渡すコメント本文である <code>comment-body</code> です。 Web UI から CSV をアップロードする場合は、<code>id</code> または <code>comment-id</code> がなければ画面側で ID が自動採番されます。 一方、入力プラグインや Web UI/API の内部データでは <code>source</code> と <code>url</code> も標準的な列として扱われるため、 再現性やソースリンクを保つには <code>source</code> と <code>url</code> も含めておくのが安全です。 この実験で使った入力 CSV も、以下の列を持っていました。</p>
+<section id="workflow" class="level2">
+<h2 class="anchored" data-anchor-id="workflow">Workflow</h2>
+<section id="process-the-csv-with-kouchou-ai" class="level3">
+<h3 class="anchored" data-anchor-id="process-the-csv-with-kouchou-ai">0. Process the CSV with Kouchou AI</h3>
+<p>First, feed the original comment CSV into the Kouchou AI report-generation pipeline. This step extracts arguments from comment bodies, creates argument embeddings, and performs hierarchical clustering and cluster-label generation for the arguments.</p>
+<p>The required CSV columns vary slightly depending on how the data is passed into Kouchou AI. When running the pipeline directly with a CSV file, the minimum columns needed for processing are <code>comment-id</code>, which identifies the unit of processing, and <code>comment-body</code>, the comment text passed to the LLM. When uploading a CSV through the Web UI, if neither <code>id</code> nor <code>comment-id</code> is present, the UI automatically assigns IDs.</p>
+<p>On the other hand, <code>source</code> and <code>url</code> are standard columns in input plugins and in the internal Web UI/API data model. For reproducibility and source links, it is safer to include them as well. The input CSV used in this experiment had the following columns:</p>
 <ul>
-<li><code>comment-id</code>: コメント単位の ID。広聴AIの <code>relations.csv</code> で抽出 argument と結び付けられ、<code>final_result_with_comments.csv</code> の <code>comment-id</code> にも残ります。</li>
-<li><code>comment-body</code>: 元コメント本文。広聴AIの argument 抽出に使われ、<code>final_result_with_comments.csv</code> では <code>original-comment</code> として出力されます。このワークフローではそこから <code>dataset/energy-plan-pubcom-sample/comment_texts.json</code> を生成します。</li>
-<li><code>source</code>: コメントの由来を表す列。パイプライン直接実行では必須ではありませんが、入力プラグインでは標準的に出力されます。存在する場合、広聴AIの <code>final_result_with_comments.csv</code> に残ります。</li>
-<li><code>url</code>: 元コメントや出典への URL を表す列。パイプライン直接実行では必須ではありませんが、ソースリンク機能を使う場合は必要です。存在する場合、広聴AIの <code>final_result_with_comments.csv</code> に残り、設定によっては <code>hierarchical_result.json</code> の argument 側にも <code>url</code> として入ります。</li>
-<li><code>attribute_...</code>: コメントに付けたい属性列。列名が <code>attribute_</code> で始まるものは、広聴AIの集約段階で属性として扱われます。<code>final_result_with_comments.csv</code> には元の列名のまま残り、<code>hierarchical_result.json</code> では <code>attribute_</code> を外した名前で <code>arguments[].attributes</code> に入ります。</li>
+<li><code>comment-id</code>: an ID for each comment. It is used in Kouchou AI’s <code>relations.csv</code> to link extracted arguments to comments, and it remains as <code>comment-id</code> in <code>final_result_with_comments.csv</code>.</li>
+<li><code>comment-body</code>: the original comment text. It is used for Kouchou AI’s argument extraction and is output as <code>original-comment</code> in <code>final_result_with_comments.csv</code>. This workflow generates <code>dataset/energy-plan-pubcom-sample/comment_texts.json</code> from it.</li>
+<li><code>source</code>: the origin of the comment. It is not required for direct pipeline execution, but input plugins output it as a standard field. If present, it remains in Kouchou AI’s <code>final_result_with_comments.csv</code>.</li>
+<li><code>url</code>: a URL for the original comment or source. It is not required for direct pipeline execution, but is needed when using source-link features. If present, it remains in Kouchou AI’s <code>final_result_with_comments.csv</code>, and depending on the configuration it may also appear as <code>url</code> on the argument side of <code>hierarchical_result.json</code>.</li>
+<li><code>attribute_...</code>: additional attribute columns attached to comments. Columns whose names begin with <code>attribute_</code> are treated as attributes in Kouchou AI’s aggregation step. They remain under their original names in <code>final_result_with_comments.csv</code>; in <code>hierarchical_result.json</code>, they appear in <code>arguments[].attributes</code> with the <code>attribute_</code> prefix removed.</li>
 </ul>
-<p>つまり、<code>comment-id</code> と <code>comment-body</code> が処理上の最小構成で、 <code>source</code> と <code>url</code> は広聴AIの画面/API/プラグイン運用では実質的に標準列として扱うのがよい列です。 それ以外の列はコメント本文とは別のメタデータとして後段の中間ファイルに保持されます。 ただし、このワークフローのスクリプトが直接使うのは主に argument、クラスタ情報、 コメント ID、元コメント本文であり、<code>source</code> や <code>attribute_...</code> は広聴AI由来の補助情報として残しているものです。</p>
-<p>このリポジトリのスクリプトは、広聴AIの処理そのものは実行せず、 <code>settings.py</code> の <code>DEFAULT_DATA_DIR</code> に指定されたデータセットディレクトリを読みます。 一時的に別データセットを使う場合は、各スクリプトに <code>--data-dir dataset/&lt;dataset-name&gt;</code> を渡します。 広聴AIをリポジトリ直下で実行した場合、中間ファイルは通常 <code>apps/api/broadlistening/pipeline/outputs/</code> 以下の実行 ID ごとのディレクトリに出力されます。</p>
-<p>対象の実行 ID のディレクトリを確認したら、必要な中間ファイルをこのリポジトリの <code>dataset/energy-plan-pubcom-sample/</code> にコピーします。</p>
+<p>In short, <code>comment-id</code> and <code>comment-body</code> are the minimum needed for processing. In Web UI/API/plugin use, <code>source</code> and <code>url</code> are effectively standard fields and are worth including. Other columns are preserved as metadata separate from the comment text in downstream intermediate files. The scripts in this workflow directly use mainly the arguments, cluster information, comment IDs, and original comment text; <code>source</code> and <code>attribute_...</code> remain as auxiliary information inherited from Kouchou AI.</p>
+<p>The scripts in this repository do not run Kouchou AI itself. They read the dataset directory specified by <code>DEFAULT_DATA_DIR</code> in <code>settings.py</code>. To temporarily use another dataset, pass <code>--data-dir dataset/&lt;dataset-name&gt;</code> to each script. When Kouchou AI is run from the repository root, intermediate files are usually written under <code>apps/api/broadlistening/pipeline/outputs/</code>, in a directory for each run ID.</p>
+<p>After identifying the target run ID directory, copy the necessary intermediate files into this repository’s <code>dataset/energy-plan-pubcom-sample/</code> directory.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> /path/to/kouchou-ai/apps/api/broadlistening/pipeline/outputs/<span class="op">&lt;</span>run-id<span class="op">&gt;</span>/hierarchical_result.json dataset/energy-plan-pubcom-sample/</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> /path/to/kouchou-ai/apps/api/broadlistening/pipeline/outputs/<span class="op">&lt;</span>run-id<span class="op">&gt;</span>/hierarchical_clusters.csv dataset/energy-plan-pubcom-sample/</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> /path/to/kouchou-ai/apps/api/broadlistening/pipeline/outputs/<span class="op">&lt;</span>run-id<span class="op">&gt;</span>/final_result_with_comments.csv dataset/energy-plan-pubcom-sample/</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> /path/to/kouchou-ai/apps/api/broadlistening/pipeline/outputs/<span class="op">&lt;</span>run-id<span class="op">&gt;</span>/embeddings.pkl dataset/energy-plan-pubcom-sample/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
-<li><code>dataset/energy-plan-pubcom-sample/hierarchical_result.json</code> は、L2 クラスタラベルと takeaway を取り出して entity linking 候補生成に使います。</li>
-<li><code>dataset/energy-plan-pubcom-sample/hierarchical_clusters.csv</code> は、各 argument がどの L1/L2 クラスタに属するかを引くために使います。</li>
-<li><code>dataset/energy-plan-pubcom-sample/final_result_with_comments.csv</code> は、argument と元コメント本文、コメント ID を対応付けるために使います。</li>
-<li><code>dataset/energy-plan-pubcom-sample/embeddings.pkl</code> は、argument をより細かい局所クラスタに分けるために使います。</li>
+<li><code>dataset/energy-plan-pubcom-sample/hierarchical_result.json</code> is used to extract L2 cluster labels and takeaways for entity-linking candidate generation.</li>
+<li><code>dataset/energy-plan-pubcom-sample/hierarchical_clusters.csv</code> is used to look up which L1/L2 clusters each argument belongs to.</li>
+<li><code>dataset/energy-plan-pubcom-sample/final_result_with_comments.csv</code> is used to connect arguments with original comment text and comment IDs.</li>
+<li><code>dataset/energy-plan-pubcom-sample/embeddings.pkl</code> is used to divide arguments into finer local clusters.</li>
 </ul>
-<p>ここでいう <strong>L2 クラスタラベル</strong> は、広聴AIがコメントから抽出した argument を 階層クラスタリングしたときの第 2 階層クラスタにつけられた代表ラベルです。 個別コメント本文ではなく、複数の argument をまとめた論点カテゴリの短い説明として扱います。 <strong>takeaway</strong> は、同じクラスタの要点を文章で要約した補助文脈です。短い L2 クラスタラベルだけでは 出てこない具体的な技術名や制度名が takeaway に含まれることがあるため、このワークフローでは entity linking 候補抽出と人手確認の両方で参照します。</p>
-<p>このリポジトリでは、広聴AIからコピーする上記 4 ファイルに加えて、 <code>dataset/energy-plan-pubcom-sample/final_result_with_comments.csv</code> から生成する <code>dataset/energy-plan-pubcom-sample/comment_texts.json</code> を Git 管理から除外しています。一方、要約、一部引用した元コメントはデータに含まれています。</p>
+<p>Here, an <strong>L2 cluster label</strong> means the representative label assigned to a second-level cluster after Kouchou AI hierarchically clusters arguments extracted from comments. It is treated as a short description of an issue category that groups multiple arguments, not as the text of an individual comment. A <strong>takeaway</strong> is auxiliary context: a textual summary of the main point of the same cluster. Because takeaways may contain specific technologies, institutions, or policy terms that do not appear in the short L2 label, this workflow uses them both for entity-linking candidate extraction and for manual review.</p>
+<p>In addition to the four files copied from Kouchou AI, this repository also generates <code>dataset/energy-plan-pubcom-sample/comment_texts.json</code> from <code>dataset/energy-plan-pubcom-sample/final_result_with_comments.csv</code>. Raw summaries and some quoted source comments are included in the data.</p>
 </section>
-<section id="entity-linking-候補を作る" class="level3">
-<h3 class="anchored" data-anchor-id="entity-linking-候補を作る">1. Entity linking 候補を作る</h3>
-<p><code>scripts/prepare_entity_candidates_no_draft.py</code> は、<code>dataset/energy-plan-pubcom-sample/hierarchical_result.json</code> の L2 クラスタラベルと takeaway から Wikidata にリンクできそうな語句を LLM で抽出し、Wikidata Search API の候補から 最も適切な QID を選びます。</p>
-<p>出力は <code>dataset/energy-plan-pubcom-sample/data.json</code> です。各 item には L2 クラスタラベルに加えて、広聴AIの takeaway を <code>description</code> として含めます。 この時点の結果は自動生成なので、<code>keyword-curation</code> で <code>description</code> を参照しながら entity ID、ラベル、説明、リンク要否を人手確認します。</p>
+<section id="generate-entity-linking-candidates" class="level3">
+<h3 class="anchored" data-anchor-id="generate-entity-linking-candidates">1. Generate entity-linking candidates</h3>
+<p><code>scripts/prepare_entity_candidates_no_draft.py</code> reads the L2 cluster labels and takeaways from <code>dataset/energy-plan-pubcom-sample/hierarchical_result.json</code>. It uses an LLM to extract terms that are likely to be linkable to Wikidata, searches the Wikidata Search API for candidates, and selects the most appropriate QID.</p>
+<p>The output is <code>dataset/energy-plan-pubcom-sample/data.json</code>. Each item contains the L2 cluster label and the Kouchou AI takeaway as its <code>description</code>. At this stage the result is automatically generated, so the <code>entity_id</code>, label, description, and link/no-link decisions should be manually checked in <code>keyword-curation</code> while referring to the <code>description</code>.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/prepare_entity_candidates_no_draft.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="entity-説明を整える" class="level3">
-<h3 class="anchored" data-anchor-id="entity-説明を整える">2. Entity 説明を整える</h3>
-<p><code>scripts/refine_entity_descriptions.py</code> は、キュレーション済み <code>dataset/energy-plan-pubcom-sample/data.json</code> の entity description を日本語で短く整えます。</p>
-<p>これは後続のグラフ表示や LLM による意見抽出で、エンティティの意味を安定させるための工程です。</p>
+<section id="refine-entity-descriptions" class="level3">
+<h3 class="anchored" data-anchor-id="refine-entity-descriptions">2. Refine entity descriptions</h3>
+<p><code>scripts/refine_entity_descriptions.py</code> rewrites the entity descriptions in the curated <code>dataset/energy-plan-pubcom-sample/data.json</code> into short Japanese descriptions.</p>
+<p>This helps stabilize the meaning of each entity for downstream graph visualization and LLM-based opinion extraction.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/refine_entity_descriptions.py <span class="at">--only-weak</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="argument-の局所クラスタを作る" class="level3">
-<h3 class="anchored" data-anchor-id="argument-の局所クラスタを作る">3. Argument の局所クラスタを作る</h3>
-<p><code>scripts/build_argument_microclusters.py</code> は、argument embedding に Ward 法を適用し、 近い argument を局所クラスタにまとめます。ここでいう局所クラスタは、全体の階層クラスタとは別に、意味的に近い argument をさらに細かくまとめた小クラスタです。広聴AIの argument はコメントごとに抽出されるため、コメントが似ていた場合、意味的に重複した argument が多数抽出されます。今回扱ったパブコメデータは特にその点が問題になったためこのプロセスを挟んでいます。</p>
-<p>入力は <code>dataset/energy-plan-pubcom-sample/embeddings.pkl</code> と <code>dataset/energy-plan-pubcom-sample/hierarchical_clusters.csv</code> です。 出力は <code>dataset/energy-plan-pubcom-sample/argument_microclusters_t0.7.csv</code> です。各局所クラスタにはセントロイド argument が付き、 後続工程で代表的な論点を取り出しやすくします。</p>
+<section id="create-local-clusters-of-arguments" class="level3">
+<h3 class="anchored" data-anchor-id="create-local-clusters-of-arguments">3. Create local clusters of arguments</h3>
+<p><code>scripts/build_argument_microclusters.py</code> applies Ward clustering to argument embeddings and groups semantically close arguments into local clusters. These local clusters are separate from the overall hierarchical clusters; they further subdivide arguments that are semantically close. Because Kouchou AI extracts arguments comment by comment, many semantically redundant arguments can be produced when comments are similar. This was a particular issue in the public-comment data used here, so this process was added.</p>
+<p>The inputs are <code>dataset/energy-plan-pubcom-sample/embeddings.pkl</code> and <code>dataset/energy-plan-pubcom-sample/hierarchical_clusters.csv</code>. The output is <code>dataset/energy-plan-pubcom-sample/argument_microclusters_t0.7.csv</code>. Each local cluster includes a centroid argument, which makes it easier to select representative issues in later steps.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/build_argument_microclusters.py <span class="at">--threshold</span> 0.7</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="コメントとクラスタの索引を作る" class="level3">
-<h3 class="anchored" data-anchor-id="コメントとクラスタの索引を作る">4. コメントとクラスタの索引を作る</h3>
-<p><code>scripts/build_cluster_comment_index.py</code> は、argument、コメント ID、階層クラスタ、 局所クラスタの対応をまとめます。</p>
-<p>入力は <code>dataset/energy-plan-pubcom-sample/final_result_with_comments.csv</code>、<code>dataset/energy-plan-pubcom-sample/hierarchical_clusters.csv</code>、 <code>dataset/energy-plan-pubcom-sample/argument_microclusters_t0.7.csv</code> です。 出力は次の 2 つです。</p>
+<section id="build-an-index-of-comments-and-clusters" class="level3">
+<h3 class="anchored" data-anchor-id="build-an-index-of-comments-and-clusters">4. Build an index of comments and clusters</h3>
+<p><code>scripts/build_cluster_comment_index.py</code> creates an index that connects arguments, comment IDs, hierarchical clusters, and local clusters.</p>
+<p>The inputs are <code>dataset/energy-plan-pubcom-sample/final_result_with_comments.csv</code>, <code>dataset/energy-plan-pubcom-sample/hierarchical_clusters.csv</code>, and <code>dataset/energy-plan-pubcom-sample/argument_microclusters_t0.7.csv</code>. The outputs are:</p>
 <ul>
-<li><code>dataset/energy-plan-pubcom-sample/cluster_comment_index.csv</code>: 公開・分析用の索引</li>
-<li><code>dataset/energy-plan-pubcom-sample/comment_texts.json</code>: コメント本文のローカル参照用ファイル</li>
+<li><code>dataset/energy-plan-pubcom-sample/cluster_comment_index.csv</code>: an index for publication and analysis</li>
+<li><code>dataset/energy-plan-pubcom-sample/comment_texts.json</code>: a local reference file mapping comment IDs to comment text</li>
 </ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/build_cluster_comment_index.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="wikidata-property-path-を探索する" class="level3">
-<h3 class="anchored" data-anchor-id="wikidata-property-path-を探索する">5. Wikidata property path を探索する</h3>
-<p><code>scripts/discover_property_paths.py</code> は、同じ L2 ラベル内で共起した QID ペアについて、 Wikidata の <code>P31</code>、<code>P279</code>、<code>P361</code>、<code>P527</code> などを調べ、直接関係や共通上位クラスを探します。</p>
-<p>出力は次の 2 つです。</p>
+<section id="discover-wikidata-property-paths" class="level3">
+<h3 class="anchored" data-anchor-id="discover-wikidata-property-paths">5. Discover Wikidata property paths</h3>
+<p><code>scripts/discover_property_paths.py</code> examines QID pairs that co-occur within the same L2 label. It checks Wikidata properties such as <code>P31</code>, <code>P279</code>, <code>P361</code>, and <code>P527</code>, and searches for direct relationships or shared upper classes.</p>
+<p>The outputs are:</p>
 <ul>
-<li><code>dataset/energy-plan-pubcom-sample/property_paths.tsv</code>: 発見した関係</li>
-<li><code>dataset/energy-plan-pubcom-sample/entity_props_cache.json</code>: Wikidata API 結果のキャッシュ</li>
+<li><code>dataset/energy-plan-pubcom-sample/property_paths.tsv</code>: discovered relationships</li>
+<li><code>dataset/energy-plan-pubcom-sample/entity_props_cache.json</code>: a cache of Wikidata API results</li>
 </ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/discover_property_paths.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="entity-graph-を作る" class="level3">
-<h3 class="anchored" data-anchor-id="entity-graph-を作る">6. Entity graph を作る</h3>
-<p><code>scripts/build_entity_graph.py</code> は、<code>dataset/energy-plan-pubcom-sample/data.json</code> と <code>dataset/energy-plan-pubcom-sample/property_paths.tsv</code> から エンティティ中心のグラフを作ります。ここでのノードは、<code>keyword-curation</code> で確認した <code>entity_id</code> 単位の統制済みエンティティです。同じエンティティが複数の L2 クラスタに現れた場合は、 その <code>item_id</code> や表記ゆれをノード側に集約します。</p>
-<p>グラフには 2 種類のエッジがあります。</p>
+<section id="build-the-entity-graph" class="level3">
+<h3 class="anchored" data-anchor-id="build-the-entity-graph">6. Build the entity graph</h3>
+<p><code>scripts/build_entity_graph.py</code> builds an entity-centered graph from <code>dataset/energy-plan-pubcom-sample/data.json</code> and <code>dataset/energy-plan-pubcom-sample/property_paths.tsv</code>. Nodes are controlled entities, one per <code>entity_id</code>, after manual checking in <code>keyword-curation</code>. If the same entity appears in multiple L2 clusters, the node aggregates the relevant <code>item_id</code>s and surface forms.</p>
+<p>The graph has two types of edges:</p>
 <ul>
-<li><code>co_mention</code>: 同一 L2 ラベル内での共起。コメント上で同じ論点カテゴリに現れたエンティティ同士を結びます。</li>
-<li><code>wikidata_property</code>: Wikidata property による関係。<code>P31</code>、<code>P279</code>、<code>P361</code>、<code>P527</code> などから見つかった直接関係や共通上位クラスに基づきます。</li>
+<li><code>co_mention</code>: co-occurrence within the same L2 label. These edges connect entities that appear in the same issue category in the comments.</li>
+<li><code>wikidata_property</code>: relationships based on Wikidata properties. These are based on direct relationships or shared upper classes found through properties such as <code>P31</code>, <code>P279</code>, <code>P361</code>, and <code>P527</code>.</li>
 </ul>
-<p>この段階のエッジは、コメント本文を読んで説明した関係ではなく、共起と Wikidata に基づく構造的な手がかりです。 後続のペア関係抽出では、この <code>co_mention</code> の重みが説明対象ペアの選定に使われます。</p>
-<p>出力は <code>dataset/energy-plan-pubcom-sample/entity_graph.json</code> です。</p>
+<p>At this stage, edges are not relationships explained by reading the comment text. They are structural clues based on co-occurrence and Wikidata. In the subsequent pair-relation extraction step, the weight of <code>co_mention</code> edges is used to select pairs for explanation.</p>
+<p>The output is <code>dataset/energy-plan-pubcom-sample/entity_graph.json</code>.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/build_entity_graph.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="entity-ごとの意見を抽出する" class="level3">
-<h3 class="anchored" data-anchor-id="entity-ごとの意見を抽出する">7. Entity ごとの意見を抽出する</h3>
-<p><code>scripts/extract_entity_opinions.py</code> は、各エンティティが登場するクラスタに対応するコメントを集め、 そのエンティティへの立場、主要な意見、他エンティティとの関係候補を LLM で抽出します。 入力としては、注目エンティティ、そのエンティティが出る L2 クラスタのコメント、 キュレーション済みエンティティ一覧を渡します。</p>
-<p>出力の <code>relations</code> は、コメント本文から見て「このエンティティは別のどのエンティティと関係して語られているか」を示す候補です。 関係タイプには <code>promotes</code>、<code>opposes</code>、<code>requires</code>、<code>replaces</code>、<code>risk_of</code>、<code>compared_with</code>、<code>causes</code>、<code>solution_for</code> があります。 この関係タイプの一覧は、<code>scripts/extract_entity_opinions.py</code> のプロンプトに固定で書いているもので、データから自動的に作っているわけではありません。 現在の一覧はエネルギー政策コメントを想定した作業用の分類なので、対象データや分析目的が変わる場合はここを差し替える余地があります。 これはビューアーでそのまま関係タイプとして表示するための確定情報ではなく、後続で説明対象ペアを選ぶための LLM 由来の手がかりとして使います。</p>
-<p>入力には <code>dataset/energy-plan-pubcom-sample/comment_texts.json</code> が必要です。出力は <code>dataset/energy-plan-pubcom-sample/entity_opinions.json</code> です。</p>
+<section id="extract-opinions-for-each-entity" class="level3">
+<h3 class="anchored" data-anchor-id="extract-opinions-for-each-entity">7. Extract opinions for each entity</h3>
+<p><code>scripts/extract_entity_opinions.py</code> gathers comments corresponding to clusters in which each entity appears, then uses an LLM to extract the stance toward that entity, major opinion points, and candidate relationships with other entities. The LLM input includes the focal entity, comments from L2 clusters in which the entity appears, and the list of curated entities.</p>
+<p>The output field <code>relations</code> indicates candidates for “which other entities this entity is discussed in relation to” based on the comment text. Relation types include <code>promotes</code>, <code>opposes</code>, <code>requires</code>, <code>replaces</code>, <code>risk_of</code>, <code>compared_with</code>, <code>causes</code>, and <code>solution_for</code>. This list is fixed in the prompt in <code>scripts/extract_entity_opinions.py</code>; it is not generated automatically from the data. The current list is a working classification designed for energy-policy comments, and it may need to be replaced when the target data or analytical purpose changes. These relation types are not final labels displayed directly in the viewer; they are LLM-derived clues for selecting pairs to explain in the next step.</p>
+<p>The input requires <code>dataset/energy-plan-pubcom-sample/comment_texts.json</code>. The output is <code>dataset/energy-plan-pubcom-sample/entity_opinions.json</code>.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/extract_entity_opinions.py <span class="at">--resume</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="ペア関係を抽出する" class="level3">
-<h3 class="anchored" data-anchor-id="ペア関係を抽出する">8. ペア関係を抽出する</h3>
-<p><code>scripts/extract_pair_relations.py</code> は、<code>dataset/energy-plan-pubcom-sample/entity_opinions.json</code> と <code>dataset/energy-plan-pubcom-sample/entity_graph.json</code> を使ってスコアの高いエンティティペアを選び、 ペア単位の関係説明を LLM で作ります。</p>
-<p>ペア選定では、7. で抽出した <code>relations</code> の件数、双方向に関係の手がかりがあるかどうか、 6. で作った <code>co_mention</code> エッジの重みを組み合わせてスコアを計算します。 閾値を超えたペアを基本対象にしつつ、グラフが分断される場合は、連結性を保つために低スコアでも補助的なペアを追加します。</p>
-<p>説明生成そのものでは、<code>relations</code> の関係タイプを直接プロンプトに渡すのではなく、 選ばれた 2 つのエンティティと、それらが共通して現れる L2 クラスタのコメント（共通クラスタがなければ両者の関連コメントの和集合）を LLM に渡します。 そのため <code>dataset/energy-plan-pubcom-sample/pair_relations.json</code> に入る説明は、ペア選定用の手がかりではなく、コメント本文に基づいて改めて生成された関係説明です。</p>
-<p>出力は <code>dataset/energy-plan-pubcom-sample/pair_relations.json</code> です。</p>
+<section id="extract-pair-level-relationships" class="level3">
+<h3 class="anchored" data-anchor-id="extract-pair-level-relationships">8. Extract pair-level relationships</h3>
+<p><code>scripts/extract_pair_relations.py</code> uses <code>dataset/energy-plan-pubcom-sample/entity_opinions.json</code> and <code>dataset/energy-plan-pubcom-sample/entity_graph.json</code> to select high-scoring entity pairs, then asks an LLM to generate pair-level relationship descriptions.</p>
+<p>Pair selection combines the number of relations extracted in step 7, whether there are bidirectional relationship clues, and the weight of <code>co_mention</code> edges created in step 6. Pairs above the threshold are used as the base set; if the graph would otherwise become disconnected, lower-scoring auxiliary pairs are added to preserve connectivity.</p>
+<p>For explanation generation itself, the prompt does not directly pass the relation types from <code>relations</code>. Instead, it passes the two selected entities and the comments from L2 clusters where both appear, or the union of their related comments if there is no shared cluster. Therefore, the descriptions in <code>dataset/energy-plan-pubcom-sample/pair_relations.json</code> are newly generated from the comment text, rather than being a direct restatement of the clues used for pair selection.</p>
+<p>The output is <code>dataset/energy-plan-pubcom-sample/pair_relations.json</code>.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/extract_pair_relations.py <span class="at">--resume</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="議論ビューアーを生成する" class="level3">
-<h3 class="anchored" data-anchor-id="議論ビューアーを生成する">9. 議論ビューアーを生成する</h3>
-<p><code>scripts/build_pair_relation_viewer.py</code> は、<code>dataset/energy-plan-pubcom-sample/pair_relations.json</code> と <code>dataset/energy-plan-pubcom-sample/entity_opinions.json</code> をブラウザで読むための静的 HTML を生成します。</p>
-<p>出力は <code>dataset/energy-plan-pubcom-sample/pair_relation_viewer.html</code> です。</p>
+<section id="generate-the-discussion-viewer" class="level3">
+<h3 class="anchored" data-anchor-id="generate-the-discussion-viewer">9. Generate the discussion viewer</h3>
+<p><code>scripts/build_pair_relation_viewer.py</code> generates a static HTML page that reads <code>dataset/energy-plan-pubcom-sample/pair_relations.json</code> and <code>dataset/energy-plan-pubcom-sample/entity_opinions.json</code> in the browser.</p>
+<p>The output is <code>dataset/energy-plan-pubcom-sample/pair_relation_viewer.html</code>.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/build_pair_relation_viewer.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
-<p>LLM を呼ぶ工程では <code>OPENAI_API_KEY</code> が必要です。</p>
+<p>Steps that call an LLM require <code>OPENAI_API_KEY</code>.</p>
 </section>
 </section>
-<section id="謝辞" class="level2">
-<h2 class="anchored" data-anchor-id="謝辞">謝辞</h2>
-<p>このツール構築は <a href="https://dh.nihu.jp/news/post/20260507">人間文化研究機構 デジタル・ヒューマニティーズ促進事業</a> の支援を受けています。</p>
+<section id="acknowledgements" class="level2">
+<h2 class="anchored" data-anchor-id="acknowledgements">Acknowledgements</h2>
+<p>This tool-building work is supported by the <a href="https://dh.nihu.jp/news/post/20260507">Digital Humanities Promotion Project of the National Institutes for the Humanities</a>.</p>
 
 
 </section>
