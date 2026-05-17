@@ -3,6 +3,7 @@ project:
   output-dir: _site
   render:
     - index.qmd
+    - index_en.qmd
   resources:
     - dataset/energy-plan-pubcom-sample/pair_relation_viewer.html
     - dataset/energy-plan-pubcom-sample/entity_opinions.json

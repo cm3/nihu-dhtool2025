@@ -2,6 +2,8 @@
 title: "広聴AI / keyword-curation ワークフロー"
 ---
 
+[English version](./index_en.html)
+
 ## 概要
 
 このディレクトリは、CSV 形式のコメントデータを広聴AIのレポート生成パイプラインにかけた中間出力を起点に、[`keyword-curation`](https://keyword-curation.vercel.app/) で人手確認した entity linking 結果を使って、情報公開請求を行なった第7次エネルギー基本計画（令和7年2月）のパブリックコメントに出てくるエンティティとその関係を整理するための作業用ワークフローです。
