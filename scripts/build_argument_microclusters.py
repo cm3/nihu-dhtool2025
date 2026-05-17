@@ -14,39 +14,47 @@ from pathlib import Path
 import numpy as np
 from scipy.cluster.hierarchy import fcluster, linkage
 from scipy.spatial.distance import pdist
+import sys
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_INPUT_DIR = ROOT / "data"
+sys.path.insert(0, str(ROOT))
+from settings import DEFAULT_DATA_DIR, MICROCLUSTER_THRESHOLD  # noqa: E402
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--threshold", type=float, default=0.7)
+    parser.add_argument("--data-dir", type=Path, default=None)
+    parser.add_argument("--threshold", type=float, default=None)
     parser.add_argument(
         "--embeddings-pkl",
         type=Path,
-        default=DEFAULT_INPUT_DIR / "embeddings.pkl",
-        help="Path to embeddings.pkl",
+        default=None,
+        help="Path to embeddings.pkl (default: --data-dir/embeddings.pkl)",
     )
     parser.add_argument(
         "--hierarchical-clusters-csv",
         type=Path,
-        default=DEFAULT_INPUT_DIR / "hierarchical_clusters.csv",
-        help="Path to hierarchical_clusters.csv",
+        default=None,
+        help="Path to hierarchical_clusters.csv (default: --data-dir/hierarchical_clusters.csv)",
     )
     parser.add_argument(
         "--output-csv",
         type=Path,
         default=None,
-        help="Output CSV path (default: data/argument_microclusters_t<threshold>.csv)",
+        help="Output CSV path (default: --data-dir/argument_microclusters_t<threshold>.csv)",
     )
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
+    args.data_dir = args.data_dir or DEFAULT_DATA_DIR
     threshold = args.threshold
-    output_csv = args.output_csv or ROOT / f"data/argument_microclusters_t{threshold}.csv"
+    if threshold is None:
+        threshold = MICROCLUSTER_THRESHOLD
+    args.embeddings_pkl = args.embeddings_pkl or args.data_dir / "embeddings.pkl"
+    args.hierarchical_clusters_csv = args.hierarchical_clusters_csv or args.data_dir / "hierarchical_clusters.csv"
+    output_csv = args.output_csv or args.data_dir / f"argument_microclusters_t{threshold}.csv"
 
     print("embeddings 読み込み中...")
     with open(args.embeddings_pkl, "rb") as f:

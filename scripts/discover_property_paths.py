@@ -30,9 +30,8 @@ from itertools import combinations
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_DATA_JSON = ROOT / "data/data.json"
-DEFAULT_OUTPUT_TSV = ROOT / "data/property_paths.tsv"
-DEFAULT_CACHE_JSON = ROOT / "data/entity_props_cache.json"
+sys.path.insert(0, str(ROOT))
+from settings import DEFAULT_DATA_DIR  # noqa: E402
 
 WIKIDATA_API = "https://www.wikidata.org/w/api.php"
 
@@ -161,26 +160,31 @@ def find_relations(qid_a: str, qid_b: str, cache: dict) -> list[dict]:
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument("--data-dir", type=Path, default=None)
     parser.add_argument(
         "--data-json",
         type=Path,
-        default=DEFAULT_DATA_JSON,
-        help="Input data.json path",
+        default=None,
+        help="Input data.json path (default: --data-dir/data.json)",
     )
     parser.add_argument(
         "--output-tsv",
         type=Path,
-        default=DEFAULT_OUTPUT_TSV,
-        help="Output TSV path",
+        default=None,
+        help="Output TSV path (default: --data-dir/property_paths.tsv)",
     )
     parser.add_argument(
         "--cache-json",
         type=Path,
-        default=DEFAULT_CACHE_JSON,
-        help="Wikidata cache JSON path",
+        default=None,
+        help="Wikidata cache JSON path (default: --data-dir/entity_props_cache.json)",
     )
     parser.add_argument("--no-cache", action="store_true", help="キャッシュを無視して再取得")
     cli = parser.parse_args()
+    cli.data_dir = cli.data_dir or DEFAULT_DATA_DIR
+    cli.data_json = cli.data_json or cli.data_dir / "data.json"
+    cli.output_tsv = cli.output_tsv or cli.data_dir / "property_paths.tsv"
+    cli.cache_json = cli.cache_json or cli.data_dir / "entity_props_cache.json"
 
     data = json.loads(cli.data_json.read_text())
     entities = data.get("entities", {})

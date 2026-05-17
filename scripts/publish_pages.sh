@@ -13,7 +13,7 @@ if [[ "$current_branch" != "main" ]]; then
   exit 1
 fi
 
-if ! git diff --quiet -- _quarto.yml index.qmd pair_relation_viewer.html data/entity_opinions.json data/pair_relations.json; then
+if ! git diff --quiet -- _quarto.yml index.qmd dataset/energy-plan-pubcom-sample/pair_relation_viewer.html dataset/energy-plan-pubcom-sample/entity_opinions.json dataset/energy-plan-pubcom-sample/pair_relations.json; then
   echo "ERROR: commit or stash source changes before publishing Pages." >&2
   echo "       This keeps gh-pages tied to a source commit." >&2
   exit 1

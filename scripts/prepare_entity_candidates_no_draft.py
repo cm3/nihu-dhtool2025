@@ -8,13 +8,14 @@ L2 クラスタラベル（64件）と takeaway に対して:
   4. 人手修正用 candidates.json を出力
 
 入力:
-    data/hierarchical_result.json
+    dataset/energy-plan-pubcom-sample/hierarchical_result.json
 
 出力:
-    data/data.json
+    dataset/energy-plan-pubcom-sample/data.json
 
 使い方:
     python scripts/prepare_entity_candidates_no_draft.py
+    python scripts/prepare_entity_candidates_no_draft.py --data-dir dataset/energy-plan-pubcom-sample
     python scripts/prepare_entity_candidates_no_draft.py --model gpt-5.4-mini
     python scripts/prepare_entity_candidates_no_draft.py --resume
 """
@@ -31,8 +32,8 @@ from pathlib import Path
 from openai import OpenAI
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_RESULT_JSON = ROOT / "data/hierarchical_result.json"
-DEFAULT_OUTPUT_JSON = ROOT / "data/data.json"
+sys.path.insert(0, str(ROOT))
+from settings import DEFAULT_DATA_DIR, LLM_MODEL  # noqa: E402
 
 WIKIDATA_API = "https://www.wikidata.org/w/api.php"
 WIKIDATA_CACHE: dict[str, list[dict]] = {}
@@ -263,18 +264,19 @@ def llm_select_qids(
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model", default="gpt-5.4-mini")
+    parser.add_argument("--data-dir", type=Path, default=None)
+    parser.add_argument("--model", default=None)
     parser.add_argument(
         "--result-json",
         type=Path,
-        default=DEFAULT_RESULT_JSON,
-        help="Path to hierarchical_result.json",
+        default=None,
+        help="Path to hierarchical_result.json (default: --data-dir/hierarchical_result.json)",
     )
     parser.add_argument(
         "--output-json",
         type=Path,
-        default=DEFAULT_OUTPUT_JSON,
-        help="Output JSON path",
+        default=None,
+        help="Output JSON path (default: --data-dir/data.json)",
     )
     parser.add_argument(
         "--resume",
@@ -282,6 +284,10 @@ def main():
         help="output-json が既にあれば処理済み item_id をスキップ",
     )
     cli = parser.parse_args()
+    cli.data_dir = cli.data_dir or DEFAULT_DATA_DIR
+    cli.model = cli.model or LLM_MODEL
+    cli.result_json = cli.result_json or cli.data_dir / "hierarchical_result.json"
+    cli.output_json = cli.output_json or cli.data_dir / "data.json"
 
     api_key = os.environ.get("OPENAI_API_KEY")
     if not api_key:

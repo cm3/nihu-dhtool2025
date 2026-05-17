@@ -5,16 +5,17 @@ Phase D: エンティティごとの意見抽出
 そのエンティティへの立場・意見・他エンティティとの関係を LLM で抽出する。
 
 入力:
-    data/data.json
-    data/cluster_comment_index.csv
-    data/comment_texts.json
-    data/argument_microclusters_t0.7.csv
+    dataset/energy-plan-pubcom-sample/data.json
+    dataset/energy-plan-pubcom-sample/cluster_comment_index.csv
+    dataset/energy-plan-pubcom-sample/comment_texts.json
+    dataset/energy-plan-pubcom-sample/argument_microclusters_t0.7.csv
 
 出力:
-    data/entity_opinions.json
+    dataset/energy-plan-pubcom-sample/entity_opinions.json
 
 使い方:
     python scripts/extract_entity_opinions.py
+    python scripts/extract_entity_opinions.py --data-dir dataset/energy-plan-pubcom-sample
     python scripts/extract_entity_opinions.py --resume
     python scripts/extract_entity_opinions.py --model gpt-5.4-mini --max-comments 40
 """
@@ -34,12 +35,14 @@ import numpy as np
 from openai import OpenAI
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_DATA_JSON = ROOT / "data/data.json"
-DEFAULT_INDEX_CSV = ROOT / "data/cluster_comment_index.csv"
-DEFAULT_COMMENT_TEXTS_JSON = ROOT / "data/comment_texts.json"
-DEFAULT_CLUSTERS_CSV = ROOT / "data/argument_microclusters_t0.7.csv"
-DEFAULT_OUTPUT_JSON = ROOT / "data/entity_opinions.json"
-DEFAULT_EXAMPLE_EMBEDDING_MODEL = "text-embedding-3-small"
+sys.path.insert(0, str(ROOT))
+from settings import (  # noqa: E402
+    DEFAULT_DATA_DIR,
+    ENTITY_OPINIONS_MAX_COMMENTS,
+    EXAMPLE_EMBEDDING_MODEL,
+    LLM_MODEL,
+    RANDOM_SEED,
+)
 
 RELATION_TYPES = [
     "promotes",      # A は B を促進・支援する
@@ -348,23 +351,34 @@ def build_example_args(
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--data-json", type=Path, default=DEFAULT_DATA_JSON,
-                        help="Input data.json path")
-    parser.add_argument("--index-csv", type=Path, default=DEFAULT_INDEX_CSV,
-                        help="Input cluster_comment_index.csv path")
-    parser.add_argument("--comment-texts-json", type=Path, default=DEFAULT_COMMENT_TEXTS_JSON,
-                        help="Input comment_texts.json path")
-    parser.add_argument("--clusters-csv", type=Path, default=DEFAULT_CLUSTERS_CSV,
-                        help="Input argument microcluster CSV path")
-    parser.add_argument("--output-json", type=Path, default=DEFAULT_OUTPUT_JSON,
-                        help="Output entity_opinions.json path")
-    parser.add_argument("--model",    default="gpt-5.4-mini")
-    parser.add_argument("--example-embedding-model", default=DEFAULT_EXAMPLE_EMBEDDING_MODEL)
-    parser.add_argument("--max-comments", type=int, default=40,
+    parser.add_argument("--data-dir", type=Path, default=None)
+    parser.add_argument("--data-json", type=Path, default=None,
+                        help="Input data.json path (default: --data-dir/data.json)")
+    parser.add_argument("--index-csv", type=Path, default=None,
+                        help="Input cluster_comment_index.csv path (default: --data-dir/cluster_comment_index.csv)")
+    parser.add_argument("--comment-texts-json", type=Path, default=None,
+                        help="Input comment_texts.json path (default: --data-dir/comment_texts.json)")
+    parser.add_argument("--clusters-csv", type=Path, default=None,
+                        help="Input argument microcluster CSV path (default: --data-dir/argument_microclusters_t0.7.csv)")
+    parser.add_argument("--output-json", type=Path, default=None,
+                        help="Output entity_opinions.json path (default: --data-dir/entity_opinions.json)")
+    parser.add_argument("--model",    default=None)
+    parser.add_argument("--example-embedding-model", default=None)
+    parser.add_argument("--max-comments", type=int, default=None,
                         help="エンティティあたりの最大コメント数")
     parser.add_argument("--resume",   action="store_true")
-    parser.add_argument("--seed",     type=int, default=42)
+    parser.add_argument("--seed",     type=int, default=None)
     cli = parser.parse_args()
+    cli.data_dir = cli.data_dir or DEFAULT_DATA_DIR
+    cli.model = cli.model or LLM_MODEL
+    cli.example_embedding_model = cli.example_embedding_model or EXAMPLE_EMBEDDING_MODEL
+    cli.max_comments = cli.max_comments or ENTITY_OPINIONS_MAX_COMMENTS
+    cli.seed = cli.seed if cli.seed is not None else RANDOM_SEED
+    cli.data_json = cli.data_json or cli.data_dir / "data.json"
+    cli.index_csv = cli.index_csv or cli.data_dir / "cluster_comment_index.csv"
+    cli.comment_texts_json = cli.comment_texts_json or cli.data_dir / "comment_texts.json"
+    cli.clusters_csv = cli.clusters_csv or cli.data_dir / "argument_microclusters_t0.7.csv"
+    cli.output_json = cli.output_json or cli.data_dir / "entity_opinions.json"
     random.seed(cli.seed)
 
     api_key = os.environ.get("OPENAI_API_KEY")

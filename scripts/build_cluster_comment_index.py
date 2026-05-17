@@ -2,8 +2,8 @@
 comment と cluster / centroid の対応関係をまとめた索引を生成する。
 
 入力:
-- data/final_result_with_comments.csv
-- data/hierarchical_clusters.csv
+- dataset/energy-plan-pubcom-sample/final_result_with_comments.csv
+- dataset/energy-plan-pubcom-sample/hierarchical_clusters.csv
 - argument_microclusters_t*.csv
 
 出力:
@@ -17,51 +17,57 @@ import argparse
 import csv
 import json
 from pathlib import Path
+import sys
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_INPUT_DIR = ROOT / "data"
-DEFAULT_MICROCLUSTERS_CSV = ROOT / "data/argument_microclusters_t0.7.csv"
-DEFAULT_INDEX_CSV = ROOT / "data/cluster_comment_index.csv"
-DEFAULT_TEXTS_JSON = ROOT / "data/comment_texts.json"
+sys.path.insert(0, str(ROOT))
+from settings import DEFAULT_DATA_DIR  # noqa: E402
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
+    parser.add_argument("--data-dir", type=Path, default=None)
     parser.add_argument(
         "--final-result-csv",
         type=Path,
-        default=DEFAULT_INPUT_DIR / "final_result_with_comments.csv",
-        help="Path to final_result_with_comments.csv",
+        default=None,
+        help="Path to final_result_with_comments.csv (default: --data-dir/final_result_with_comments.csv)",
     )
     parser.add_argument(
         "--hierarchical-clusters-csv",
         type=Path,
-        default=DEFAULT_INPUT_DIR / "hierarchical_clusters.csv",
-        help="Path to hierarchical_clusters.csv",
+        default=None,
+        help="Path to hierarchical_clusters.csv (default: --data-dir/hierarchical_clusters.csv)",
     )
     parser.add_argument(
         "--microclusters-csv",
         type=Path,
-        default=DEFAULT_MICROCLUSTERS_CSV,
-        help="Path to argument microcluster CSV",
+        default=None,
+        help="Path to argument microcluster CSV (default: --data-dir/argument_microclusters_t0.7.csv)",
     )
     parser.add_argument(
         "--output-csv",
         type=Path,
-        default=DEFAULT_INDEX_CSV,
-        help="Output cluster/index CSV path",
+        default=None,
+        help="Output cluster/index CSV path (default: --data-dir/cluster_comment_index.csv)",
     )
     parser.add_argument(
         "--comment-texts-json",
         type=Path,
-        default=DEFAULT_TEXTS_JSON,
-        help="Output JSON path for comment_id -> comment text",
+        default=None,
+        help="Output JSON path for comment_id -> comment text (default: --data-dir/comment_texts.json)",
     )
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
+    args.data_dir = args.data_dir or DEFAULT_DATA_DIR
+    args.final_result_csv = args.final_result_csv or args.data_dir / "final_result_with_comments.csv"
+    args.hierarchical_clusters_csv = args.hierarchical_clusters_csv or args.data_dir / "hierarchical_clusters.csv"
+    args.microclusters_csv = args.microclusters_csv or args.data_dir / "argument_microclusters_t0.7.csv"
+    args.output_csv = args.output_csv or args.data_dir / "cluster_comment_index.csv"
+    args.comment_texts_json = args.comment_texts_json or args.data_dir / "comment_texts.json"
 
     cluster_by_arg: dict[str, dict[str, str]] = {}
     with open(args.hierarchical_clusters_csv) as f:

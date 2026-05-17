@@ -25,14 +25,14 @@ from pathlib import Path
 from openai import OpenAI
 
 ROOT = Path(__file__).resolve().parents[1]
-
-DEFAULT_OPINIONS_JSON = ROOT / "data/entity_opinions.json"
-DEFAULT_GRAPH_JSON = ROOT / "data/entity_graph.json"
-DEFAULT_DATA_JSON = ROOT / "data/data.json"
-DEFAULT_INDEX_CSV = ROOT / "data/cluster_comment_index.csv"
-DEFAULT_COMMENT_TEXTS_JSON = ROOT / "data/comment_texts.json"
-DEFAULT_CLUSTERS_CSV = ROOT / "data/argument_microclusters_t0.7.csv"
-DEFAULT_OUTPUT_JSON = ROOT / "data/pair_relations.json"
+sys.path.insert(0, str(ROOT))
+from settings import (  # noqa: E402
+    DEFAULT_DATA_DIR,
+    LLM_MODEL,
+    PAIR_RELATIONS_MAX_COMMENTS,
+    PAIR_RELATIONS_SCORE_THRESHOLD,
+    RANDOM_SEED,
+)
 
 SYSTEM_PROMPT = """\
 あなたはエネルギー政策のパブリックコメントを分析するアシスタントです。
@@ -195,20 +195,33 @@ def augment_pairs_for_connectivity(entities: list[dict], candidate_pairs: list[d
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--opinions-json", type=Path, default=DEFAULT_OPINIONS_JSON)
-    parser.add_argument("--graph-json", type=Path, default=DEFAULT_GRAPH_JSON)
-    parser.add_argument("--data-json", type=Path, default=DEFAULT_DATA_JSON)
-    parser.add_argument("--index-csv", type=Path, default=DEFAULT_INDEX_CSV)
-    parser.add_argument("--comment-texts-json", type=Path, default=DEFAULT_COMMENT_TEXTS_JSON)
-    parser.add_argument("--clusters-csv", type=Path, default=DEFAULT_CLUSTERS_CSV)
-    parser.add_argument("--output-json", type=Path, default=DEFAULT_OUTPUT_JSON)
-    parser.add_argument("--model",           default="gpt-5.4-mini")
-    parser.add_argument("--score-threshold", type=int, default=4)
-    parser.add_argument("--max-comments",    type=int, default=30,
+    parser.add_argument("--data-dir", type=Path, default=None)
+    parser.add_argument("--opinions-json", type=Path, default=None)
+    parser.add_argument("--graph-json", type=Path, default=None)
+    parser.add_argument("--data-json", type=Path, default=None)
+    parser.add_argument("--index-csv", type=Path, default=None)
+    parser.add_argument("--comment-texts-json", type=Path, default=None)
+    parser.add_argument("--clusters-csv", type=Path, default=None)
+    parser.add_argument("--output-json", type=Path, default=None)
+    parser.add_argument("--model",           default=None)
+    parser.add_argument("--score-threshold", type=int, default=None)
+    parser.add_argument("--max-comments",    type=int, default=None,
                         help="ペアあたりの最大コメント数")
     parser.add_argument("--resume",          action="store_true")
-    parser.add_argument("--seed",            type=int, default=42)
+    parser.add_argument("--seed",            type=int, default=None)
     cli = parser.parse_args()
+    cli.data_dir = cli.data_dir or DEFAULT_DATA_DIR
+    cli.model = cli.model or LLM_MODEL
+    cli.score_threshold = cli.score_threshold if cli.score_threshold is not None else PAIR_RELATIONS_SCORE_THRESHOLD
+    cli.max_comments = cli.max_comments or PAIR_RELATIONS_MAX_COMMENTS
+    cli.seed = cli.seed if cli.seed is not None else RANDOM_SEED
+    cli.opinions_json = cli.opinions_json or cli.data_dir / "entity_opinions.json"
+    cli.graph_json = cli.graph_json or cli.data_dir / "entity_graph.json"
+    cli.data_json = cli.data_json or cli.data_dir / "data.json"
+    cli.index_csv = cli.index_csv or cli.data_dir / "cluster_comment_index.csv"
+    cli.comment_texts_json = cli.comment_texts_json or cli.data_dir / "comment_texts.json"
+    cli.clusters_csv = cli.clusters_csv or cli.data_dir / "argument_microclusters_t0.7.csv"
+    cli.output_json = cli.output_json or cli.data_dir / "pair_relations.json"
     random.seed(cli.seed)
 
     api_key = os.environ.get("OPENAI_API_KEY")

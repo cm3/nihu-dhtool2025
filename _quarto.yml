@@ -4,9 +4,9 @@ project:
   render:
     - index.qmd
   resources:
-    - pair_relation_viewer.html
-    - data/entity_opinions.json
-    - data/pair_relations.json
+    - dataset/energy-plan-pubcom-sample/pair_relation_viewer.html
+    - dataset/energy-plan-pubcom-sample/entity_opinions.json
+    - dataset/energy-plan-pubcom-sample/pair_relations.json
 
 website:
   title: "広聴AI keyword-curation ワークフロー"

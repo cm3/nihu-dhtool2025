@@ -30,12 +30,11 @@ import argparse
 from collections import defaultdict
 from itertools import combinations
 from pathlib import Path
+import sys
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_DATA_JSON = ROOT / "data/data.json"
-DEFAULT_PROP_PATHS = ROOT / "data/property_paths.tsv"
-DEFAULT_CACHE_JSON = ROOT / "data/entity_props_cache.json"
-DEFAULT_OUTPUT_JSON = ROOT / "data/entity_graph.json"
+sys.path.insert(0, str(ROOT))
+from settings import DEFAULT_DATA_DIR  # noqa: E402
 
 
 def node_id(qid: str, mention: str) -> str:
@@ -45,11 +44,17 @@ def node_id(qid: str, mention: str) -> str:
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--data-json", type=Path, default=DEFAULT_DATA_JSON, help="Input data.json path")
-    parser.add_argument("--property-paths", type=Path, default=DEFAULT_PROP_PATHS, help="Input property_paths.tsv path")
-    parser.add_argument("--cache-json", type=Path, default=DEFAULT_CACHE_JSON, help="Input entity_props_cache.json path")
-    parser.add_argument("--output-json", type=Path, default=DEFAULT_OUTPUT_JSON, help="Output entity_graph.json path")
+    parser.add_argument("--data-dir", type=Path, default=None)
+    parser.add_argument("--data-json", type=Path, default=None, help="Input data.json path")
+    parser.add_argument("--property-paths", type=Path, default=None, help="Input property_paths.tsv path")
+    parser.add_argument("--cache-json", type=Path, default=None, help="Input entity_props_cache.json path")
+    parser.add_argument("--output-json", type=Path, default=None, help="Output entity_graph.json path")
     cli = parser.parse_args()
+    cli.data_dir = cli.data_dir or DEFAULT_DATA_DIR
+    cli.data_json = cli.data_json or cli.data_dir / "data.json"
+    cli.property_paths = cli.property_paths or cli.data_dir / "property_paths.tsv"
+    cli.cache_json = cli.cache_json or cli.data_dir / "entity_props_cache.json"
+    cli.output_json = cli.output_json or cli.data_dir / "entity_graph.json"
 
     data = json.loads(cli.data_json.read_text())
     entities = data.get("entities", {})

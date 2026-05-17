@@ -1,0 +1,2441 @@
+{
+  "meta": {
+    "node_count": 74,
+    "wikidata_node_count": 60,
+    "local_node_count": 14,
+    "co_mention_edges": 133,
+    "wikidata_edges": 8
+  },
+  "nodes": [
+    {
+      "id": "Q12705",
+      "type": "wikidata",
+      "qid": "Q12705",
+      "controlled_label": "再生可能エネルギー",
+      "wikidata_desc": "自然界で補充される太陽光や風力などのエネルギー",
+      "confidence": "high",
+      "item_ids": [
+        "2_9",
+        "2_39",
+        "2_25",
+        "2_29",
+        "2_0",
+        "2_4",
+        "2_20",
+        "2_37",
+        "2_32",
+        "2_61",
+        "2_17",
+        "2_11",
+        "2_44",
+        "2_60",
+        "2_43",
+        "2_40",
+        "2_51",
+        "2_3",
+        "2_14"
+      ],
+      "surfaces": [
+        "再生可能エネルギー",
+        "再エネ",
+        "代替エネルギー"
+      ]
+    },
+    {
+      "id": "Q810924",
+      "type": "wikidata",
+      "qid": "Q810924",
+      "controlled_label": "蓄電システム",
+      "wikidata_desc": "電気を蓄えて必要時に供給する蓄電設備",
+      "confidence": "medium",
+      "item_ids": [
+        "2_9"
+      ],
+      "surfaces": [
+        "蓄電池"
+      ]
+    },
+    {
+      "id": "Q4531977",
+      "type": "wikidata",
+      "qid": "Q4531977",
+      "controlled_label": "エネルギーシステム",
+      "wikidata_desc": "エネルギーの生産・変換・送電・利用を含む仕組みの集合",
+      "confidence": "high",
+      "item_ids": [
+        "2_9"
+      ],
+      "surfaces": [
+        "エネルギーシステム"
+      ]
+    },
+    {
+      "id": "Q11536219",
+      "type": "wikidata",
+      "qid": "Q11536219",
+      "controlled_label": "核融合炉",
+      "wikidata_desc": "核融合反応で熱を得る発電用原子炉",
+      "confidence": "medium",
+      "item_ids": [
+        "2_39"
+      ],
+      "surfaces": [
+        "核融合技術"
+      ]
+    },
+    {
+      "id": "Q1805337",
+      "type": "wikidata",
+      "qid": "Q1805337",
+      "controlled_label": "エネルギー政策",
+      "wikidata_desc": "政府などがエネルギー開発や供給を進めるための方針",
+      "confidence": "high",
+      "item_ids": [
+        "2_25",
+        "2_54",
+        "2_63",
+        "2_48",
+        "2_50",
+        "2_14"
+      ],
+      "surfaces": [
+        "エネルギー政策"
+      ]
+    },
+    {
+      "id": "Q185252",
+      "type": "wikidata",
+      "qid": "Q185252",
+      "controlled_label": "放射性廃棄物",
+      "wikidata_desc": "使用済み放射性物質や汚染物で、再利用せず廃棄されるもの",
+      "confidence": "high",
+      "item_ids": [
+        "2_49",
+        "2_52",
+        "2_6"
+      ],
+      "surfaces": [
+        "核廃棄物",
+        "放射性廃棄物"
+      ]
+    },
+    {
+      "id": "Q17232373",
+      "type": "wikidata",
+      "qid": "Q17232373",
+      "controlled_label": "原子力発電",
+      "wikidata_desc": "原子核分裂の熱を利用して電気をつくる発電方式",
+      "confidence": "high",
+      "item_ids": [
+        "2_49",
+        "2_52",
+        "2_5",
+        "2_38",
+        "2_0",
+        "2_36",
+        "2_7",
+        "2_20",
+        "2_30",
+        "2_10",
+        "2_57",
+        "2_24",
+        "2_62",
+        "2_33",
+        "2_40",
+        "2_28"
+      ],
+      "surfaces": [
+        "原発",
+        "原子力発電"
+      ]
+    },
+    {
+      "id": "Q11448",
+      "type": "wikidata",
+      "qid": "Q11448",
+      "controlled_label": "放射能",
+      "wikidata_desc": "不安定な原子核が放射線を出す性質",
+      "confidence": "high",
+      "item_ids": [
+        "2_52"
+      ],
+      "surfaces": [
+        "放射能"
+      ]
+    },
+    {
+      "id": "Q80877",
+      "type": "wikidata",
+      "qid": "Q80877",
+      "controlled_label": "原子炉",
+      "wikidata_desc": "制御された核分裂反応で熱を得る装置",
+      "confidence": "high",
+      "item_ids": [
+        "2_52"
+      ],
+      "surfaces": [
+        "原子炉"
+      ]
+    },
+    {
+      "id": "Q194523",
+      "type": "wikidata",
+      "qid": "Q194523",
+      "controlled_label": "核燃料",
+      "wikidata_desc": "核分裂や核融合でエネルギーを得るための物質",
+      "confidence": "high",
+      "item_ids": [
+        "2_52"
+      ],
+      "surfaces": [
+        "核燃料"
+      ]
+    },
+    {
+      "id": "Q134447",
+      "type": "wikidata",
+      "qid": "Q134447",
+      "controlled_label": "原子力発電所",
+      "wikidata_desc": "原子力を利用して電力を生み出す発電施設",
+      "confidence": "high",
+      "item_ids": [
+        "2_52",
+        "2_46",
+        "2_15",
+        "2_6",
+        "2_41",
+        "2_55",
+        "2_1",
+        "2_23",
+        "2_50",
+        "2_59"
+      ],
+      "surfaces": [
+        "原子力発電所",
+        "原発"
+      ]
+    },
+    {
+      "id": "Q1620824",
+      "type": "wikidata",
+      "qid": "Q1620824",
+      "controlled_label": "原子力事故",
+      "wikidata_desc": "原子力関連施設で放射性物質や放射線が関わる事故",
+      "confidence": "high",
+      "item_ids": [
+        "2_52",
+        "2_27",
+        "2_34"
+      ],
+      "surfaces": [
+        "原発事故"
+      ]
+    },
+    {
+      "id": "Q171178",
+      "type": "wikidata",
+      "qid": "Q171178",
+      "controlled_label": "福島第一原子力発電所事故",
+      "wikidata_desc": "2011年の地震・津波で起きた福島第一原発の重大事故",
+      "confidence": "high",
+      "item_ids": [
+        "2_52",
+        "2_19",
+        "2_29",
+        "2_1"
+      ],
+      "surfaces": [
+        "福島第一原子力発電所事故",
+        "福島原発事故",
+        "福島第一原発事故"
+      ]
+    },
+    {
+      "id": "Q186161",
+      "type": "wikidata",
+      "qid": "Q186161",
+      "controlled_label": "放射線",
+      "wikidata_desc": "高いエネルギーをもつ粒子や電磁波の総称",
+      "confidence": "high",
+      "item_ids": [
+        "2_52"
+      ],
+      "surfaces": [
+        "放射線"
+      ]
+    },
+    {
+      "id": "T1",
+      "type": "local",
+      "qid": null,
+      "controlled_label": "原子力発電所の再稼働",
+      "wikidata_desc": "停止中の原子力発電所を再び運転開始すること",
+      "confidence": "none",
+      "item_ids": [
+        "2_46"
+      ],
+      "surfaces": [
+        "原子力発電所の再稼働"
+      ]
+    },
+    {
+      "id": "Q1189820",
+      "type": "wikidata",
+      "qid": "Q1189820",
+      "controlled_label": "原子力撤廃",
+      "wikidata_desc": "原子力発電の利用をやめること",
+      "confidence": "high",
+      "item_ids": [
+        "2_13",
+        "2_29",
+        "2_61",
+        "2_11",
+        "2_44"
+      ],
+      "surfaces": [
+        "脱原発",
+        "原発廃止"
+      ]
+    },
+    {
+      "id": "Q119386673",
+      "type": "wikidata",
+      "qid": "Q119386673",
+      "controlled_label": "若者",
+      "wikidata_desc": "青年期から成人初期にある比較的若い世代",
+      "confidence": "high",
+      "item_ids": [
+        "2_16"
+      ],
+      "surfaces": [
+        "若者"
+      ]
+    },
+    {
+      "id": "Q1941338",
+      "type": "wikidata",
+      "qid": "Q1941338",
+      "controlled_label": "市民",
+      "wikidata_desc": "社会の構成員として政治や公共に関わる人々",
+      "confidence": "high",
+      "item_ids": [
+        "2_16"
+      ],
+      "surfaces": [
+        "市民"
+      ]
+    },
+    {
+      "id": "Q1773152",
+      "type": "wikidata",
+      "qid": "Q1773152",
+      "controlled_label": "住民参画",
+      "wikidata_desc": "市民や組織が意思決定や意見形成に参加すること",
+      "confidence": "medium",
+      "item_ids": [
+        "2_16"
+      ],
+      "surfaces": [
+        "民主的な政策決定プロセス"
+      ]
+    },
+    {
+      "id": "Q6558431",
+      "type": "wikidata",
+      "qid": "Q6558431",
+      "controlled_label": "石炭火力発電所",
+      "wikidata_desc": "石炭を燃料として電力を生み出す火力発電所",
+      "confidence": "high",
+      "item_ids": [
+        "2_42"
+      ],
+      "surfaces": [
+        "石炭火力発電所"
+      ]
+    },
+    {
+      "id": "Q11982303",
+      "type": "wikidata",
+      "qid": "Q11982303",
+      "controlled_label": "石炭火力発電",
+      "wikidata_desc": "石炭を燃料として発電する火力発電方式",
+      "confidence": "high",
+      "item_ids": [
+        "2_42"
+      ],
+      "surfaces": [
+        "石炭火力発電"
+      ]
+    },
+    {
+      "id": "T2",
+      "type": "local",
+      "qid": null,
+      "controlled_label": "国際的責任",
+      "wikidata_desc": "日本が国際社会で果たすべき温暖化対策上の責務",
+      "confidence": "high",
+      "item_ids": [
+        "2_42"
+      ],
+      "surfaces": [
+        "国際的責任"
+      ]
+    },
+    {
+      "id": "T3",
+      "type": "local",
+      "qid": null,
+      "controlled_label": "具体的計画",
+      "wikidata_desc": "実現に向けた詳細な実施方針や工程",
+      "confidence": "high",
+      "item_ids": [
+        "2_42"
+      ],
+      "surfaces": [
+        "具体的計画"
+      ]
+    },
+    {
+      "id": "Q104696754",
+      "type": "wikidata",
+      "qid": "Q104696754",
+      "controlled_label": "石炭火力発電の段階的廃止",
+      "wikidata_desc": "石炭を燃料とする火力発電を段階的にやめる政策",
+      "confidence": "medium",
+      "item_ids": [
+        "2_42",
+        "2_3"
+      ],
+      "surfaces": [
+        "石炭火力全廃",
+        "石炭火力発電"
+      ]
+    },
+    {
+      "id": "Q556",
+      "type": "wikidata",
+      "qid": "Q556",
+      "controlled_label": "水素",
+      "wikidata_desc": "原子番号1の最も軽い元素",
+      "confidence": "high",
+      "item_ids": [
+        "2_21",
+        "2_26"
+      ],
+      "surfaces": [
+        "水素"
+      ]
+    },
+    {
+      "id": "T4",
+      "type": "local",
+      "qid": null,
+      "controlled_label": "水素・アンモニア火力発電",
+      "wikidata_desc": "水素やアンモニアを燃料に使う火力発電",
+      "confidence": "high",
+      "item_ids": [
+        "2_21"
+      ],
+      "surfaces": [
+        "水素・アンモニア火力発電"
+      ]
+    },
+    {
+      "id": "T5",
+      "type": "local",
+      "qid": null,
+      "controlled_label": "CCS付火力発電",
+      "wikidata_desc": "CCSを備えた二酸化炭素回収型の火力発電",
+      "confidence": "high",
+      "item_ids": [
+        "2_21"
+      ],
+      "surfaces": [
+        "CCS付火力発電"
+      ]
+    },
+    {
+      "id": "T6",
+      "type": "local",
+      "qid": null,
+      "controlled_label": "第7次エネルギー基本計画",
+      "wikidata_desc": "日本の次期エネルギー政策の基本方針案",
+      "confidence": "high",
+      "item_ids": [
+        "2_47"
+      ],
+      "surfaces": [
+        "第7次エネルギー基本計画"
+      ]
+    },
+    {
+      "id": "T7",
+      "type": "local",
+      "qid": null,
+      "controlled_label": "エネルギー基本計画",
+      "wikidata_desc": "日本のエネルギー政策の基本方針を示す計画",
+      "confidence": "high",
+      "item_ids": [
+        "2_47"
+      ],
+      "surfaces": [
+        "エネルギー基本計画"
+      ]
+    },
+    {
+      "id": "Q13065634",
+      "type": "wikidata",
+      "qid": "Q13065634",
+      "controlled_label": "環境汚染",
+      "wikidata_desc": "汚染物質によって自然環境が損なわれること",
+      "confidence": "high",
+      "item_ids": [
+        "2_31"
+      ],
+      "surfaces": [
+        "環境汚染"
+      ]
+    },
+    {
+      "id": "Q87075524",
+      "type": "wikidata",
+      "qid": "Q87075524",
+      "controlled_label": "健康リスク",
+      "wikidata_desc": "特定の出来事や要因によって生じる健康への悪影響",
+      "confidence": "high",
+      "item_ids": [
+        "2_31"
+      ],
+      "surfaces": [
+        "健康リスク"
+      ]
+    },
+    {
+      "id": "T8",
+      "type": "local",
+      "qid": null,
+      "controlled_label": "国民負担",
+      "wikidata_desc": "国民が税や料金として負担する費用",
+      "confidence": "high",
+      "item_ids": [
+        "2_35"
+      ],
+      "surfaces": [
+        "国民負担"
+      ]
+    },
+    {
+      "id": "Q1156854",
+      "type": "wikidata",
+      "qid": "Q1156854",
+      "controlled_label": "政策",
+      "wikidata_desc": "政府や組織が目標達成のために定める方針や施策",
+      "confidence": "high",
+      "item_ids": [
+        "2_35",
+        "2_55",
+        "2_18"
+      ],
+      "surfaces": [
+        "政策"
+      ]
+    },
+    {
+      "id": "Q1962383",
+      "type": "wikidata",
+      "qid": "Q1962383",
+      "controlled_label": "持続可能エネルギー",
+      "wikidata_desc": "将来世代の需要を損なわずに利用できるエネルギー",
+      "confidence": "high",
+      "item_ids": [
+        "2_15"
+      ],
+      "surfaces": [
+        "持続可能なエネルギー"
+      ]
+    },
+    {
+      "id": "Q478859",
+      "type": "wikidata",
+      "qid": "Q478859",
+      "controlled_label": "水素エネルギー社会",
+      "wikidata_desc": "水素を主要なエネルギー源として利用する社会構想",
+      "confidence": "medium",
+      "item_ids": [
+        "2_4",
+        "2_26",
+        "2_58",
+        "2_56"
+      ],
+      "surfaces": [
+        "水素エネルギーの持続可能な利用",
+        "水素社会",
+        "水素エネルギー"
+      ]
+    },
+    {
+      "id": "Q380170",
+      "type": "wikidata",
+      "qid": "Q380170",
+      "controlled_label": "省エネルギー",
+      "wikidata_desc": "エネルギー消費を抑えるための取り組み",
+      "confidence": "high",
+      "item_ids": [
+        "2_53"
+      ],
+      "surfaces": [
+        "省エネ"
+      ]
+    },
+    {
+      "id": "Q1088669",
+      "type": "wikidata",
+      "qid": "Q1088669",
+      "controlled_label": "安全性",
+      "wikidata_desc": "危険や損害の起こりにくさの度合い",
+      "confidence": "high",
+      "item_ids": [
+        "2_41"
+      ],
+      "surfaces": [
+        "安全性"
+      ]
+    },
+    {
+      "id": "Q1888109",
+      "type": "wikidata",
+      "qid": "Q1888109",
+      "controlled_label": "原子力安全",
+      "wikidata_desc": "原子力施設の事故防止と安全確保に関する考え方",
+      "confidence": "high",
+      "item_ids": [
+        "2_55",
+        "2_63",
+        "2_57",
+        "2_23"
+      ],
+      "surfaces": [
+        "原子力安全",
+        "安全性"
+      ]
+    },
+    {
+      "id": "Q167336",
+      "type": "wikidata",
+      "qid": "Q167336",
+      "controlled_label": "温室効果ガス",
+      "wikidata_desc": "赤外線を吸収して温室効果を起こす大気中の気体",
+      "confidence": "high",
+      "item_ids": [
+        "2_12"
+      ],
+      "surfaces": [
+        "温室効果ガス"
+      ]
+    },
+    {
+      "id": "Q59241925",
+      "type": "wikidata",
+      "qid": "Q59241925",
+      "controlled_label": "1.5℃目標",
+      "wikidata_desc": "産業革命前比1.5℃以内に抑える温暖化抑制目標",
+      "confidence": "high",
+      "item_ids": [
+        "2_12"
+      ],
+      "surfaces": [
+        "1.5℃目標"
+      ]
+    },
+    {
+      "id": "Q7174",
+      "type": "wikidata",
+      "qid": "Q7174",
+      "controlled_label": "民主主義",
+      "wikidata_desc": "国民が主権を持ち、参加して統治を行う政治原理",
+      "confidence": "medium",
+      "item_ids": [
+        "2_54"
+      ],
+      "surfaces": [
+        "民主性"
+      ]
+    },
+    {
+      "id": "Q535347",
+      "type": "wikidata",
+      "qid": "Q535347",
+      "controlled_label": "透明性",
+      "wikidata_desc": "意思決定や運営の過程が外から見えやすいこと",
+      "confidence": "high",
+      "item_ids": [
+        "2_54",
+        "2_45"
+      ],
+      "surfaces": [
+        "透明性"
+      ]
+    },
+    {
+      "id": "T9",
+      "type": "local",
+      "qid": null,
+      "controlled_label": "水素社会推進法",
+      "wikidata_desc": "水素社会への移行を促進するための推進法",
+      "confidence": "high",
+      "item_ids": [
+        "2_26"
+      ],
+      "surfaces": [
+        "水素社会推進法"
+      ]
+    },
+    {
+      "id": "Q948732",
+      "type": "wikidata",
+      "qid": "Q948732",
+      "controlled_label": "環境教育",
+      "wikidata_desc": "環境問題への理解と行動を促す教育分野",
+      "confidence": "high",
+      "item_ids": [
+        "2_18"
+      ],
+      "surfaces": [
+        "教育"
+      ]
+    },
+    {
+      "id": "Q131363127",
+      "type": "wikidata",
+      "qid": "Q131363127",
+      "controlled_label": "コスト",
+      "wikidata_desc": "何かを達成するために要する費用や負担",
+      "confidence": "high",
+      "item_ids": [
+        "2_10",
+        "2_24"
+      ],
+      "surfaces": [
+        "コスト"
+      ]
+    },
+    {
+      "id": "Q104493",
+      "type": "wikidata",
+      "qid": "Q104493",
+      "controlled_label": "リスク",
+      "wikidata_desc": "損失や不利益が生じる可能性",
+      "confidence": "high",
+      "item_ids": [
+        "2_10"
+      ],
+      "surfaces": [
+        "リスク"
+      ]
+    },
+    {
+      "id": "Q7886977",
+      "type": "wikidata",
+      "qid": "Q7886977",
+      "controlled_label": "原子力政策",
+      "wikidata_desc": "原子力燃料の利用や原発運用に関する政策",
+      "confidence": "high",
+      "item_ids": [
+        "2_1"
+      ],
+      "surfaces": [
+        "原発政策"
+      ]
+    },
+    {
+      "id": "Q125928",
+      "type": "wikidata",
+      "qid": "Q125928",
+      "controlled_label": "気候変動",
+      "wikidata_desc": "地球規模で気温や降水などの長期的変化",
+      "confidence": "high",
+      "item_ids": [
+        "2_63",
+        "2_8"
+      ],
+      "surfaces": [
+        "気候変動"
+      ]
+    },
+    {
+      "id": "Q12147",
+      "type": "wikidata",
+      "qid": "Q12147",
+      "controlled_label": "健康",
+      "wikidata_desc": "心身の機能が良好に保たれた状態",
+      "confidence": "high",
+      "item_ids": [
+        "2_63",
+        "2_28"
+      ],
+      "surfaces": [
+        "健康"
+      ]
+    },
+    {
+      "id": "Q11290480",
+      "type": "wikidata",
+      "qid": "Q11290480",
+      "controlled_label": "エネルギー自給率",
+      "wikidata_desc": "国内で確保できる一次エネルギーの割合",
+      "confidence": "high",
+      "item_ids": [
+        "2_32"
+      ],
+      "surfaces": [
+        "エネルギー自給率"
+      ]
+    },
+    {
+      "id": "Q12748",
+      "type": "wikidata",
+      "qid": "Q12748",
+      "controlled_label": "化石燃料",
+      "wikidata_desc": "古代の生物由来の有機物からなる燃料",
+      "confidence": "high",
+      "item_ids": [
+        "2_17"
+      ],
+      "surfaces": [
+        "化石燃料"
+      ]
+    },
+    {
+      "id": "T10",
+      "type": "local",
+      "qid": null,
+      "controlled_label": "持続可能な社会",
+      "wikidata_desc": "環境負荷を抑えつつ将来世代も暮らせる社会",
+      "confidence": "high",
+      "item_ids": [
+        "2_8"
+      ],
+      "surfaces": [
+        "持続可能な社会"
+      ]
+    },
+    {
+      "id": "Q219416",
+      "type": "wikidata",
+      "qid": "Q219416",
+      "controlled_label": "持続可能性",
+      "wikidata_desc": "人類社会が生態系と両立しながら維持される能力",
+      "confidence": "high",
+      "item_ids": [
+        "2_8",
+        "2_56"
+      ],
+      "surfaces": [
+        "持続可能性"
+      ]
+    },
+    {
+      "id": "Q6857873",
+      "type": "wikidata",
+      "qid": "Q6857873",
+      "controlled_label": "軍事的リスク",
+      "wikidata_desc": "軍事攻撃や武力衝突によって生じる危険性",
+      "confidence": "medium",
+      "item_ids": [
+        "2_23"
+      ],
+      "surfaces": [
+        "軍事的リスク"
+      ]
+    },
+    {
+      "id": "T11",
+      "type": "local",
+      "qid": null,
+      "controlled_label": "政治的信頼",
+      "wikidata_desc": "政治や政治家への信頼感、支持の度合い",
+      "confidence": "high",
+      "item_ids": [
+        "2_2"
+      ],
+      "surfaces": [
+        "政治的信頼"
+      ]
+    },
+    {
+      "id": "Q17946",
+      "type": "wikidata",
+      "qid": "Q17946",
+      "controlled_label": "世論",
+      "wikidata_desc": "成人層に広がる意見や信念の総体",
+      "confidence": "medium",
+      "item_ids": [
+        "2_2"
+      ],
+      "surfaces": [
+        "国民の声"
+      ]
+    },
+    {
+      "id": "Q40231",
+      "type": "wikidata",
+      "qid": "Q40231",
+      "controlled_label": "選挙",
+      "wikidata_desc": "投票によって代表者や首長を選ぶ手続き",
+      "confidence": "high",
+      "item_ids": [
+        "2_2"
+      ],
+      "surfaces": [
+        "選挙"
+      ]
+    },
+    {
+      "id": "Q192127",
+      "type": "wikidata",
+      "qid": "Q192127",
+      "controlled_label": "太陽光発電",
+      "wikidata_desc": "太陽光を太陽電池で電力に変換する発電方式",
+      "confidence": "high",
+      "item_ids": [
+        "2_22"
+      ],
+      "surfaces": [
+        "太陽光発電"
+      ]
+    },
+    {
+      "id": "Q2491694",
+      "type": "wikidata",
+      "qid": "Q2491694",
+      "controlled_label": "環境影響",
+      "wikidata_desc": "人間活動や事業が自然環境へ及ぼす影響",
+      "confidence": "high",
+      "item_ids": [
+        "2_22"
+      ],
+      "surfaces": [
+        "環境影響"
+      ]
+    },
+    {
+      "id": "T12",
+      "type": "local",
+      "qid": null,
+      "controlled_label": "避難計画",
+      "wikidata_desc": "原発事故時の住民避難の手順や体制を定めた計画",
+      "confidence": "high",
+      "item_ids": [
+        "2_27"
+      ],
+      "surfaces": [
+        "避難計画"
+      ]
+    },
+    {
+      "id": "Q1274115",
+      "type": "wikidata",
+      "qid": "Q1274115",
+      "controlled_label": "責任",
+      "wikidata_desc": "自らの行為や結果について負うべき義務や説明責任",
+      "confidence": "high",
+      "item_ids": [
+        "2_27",
+        "2_45"
+      ],
+      "surfaces": [
+        "責任"
+      ]
+    },
+    {
+      "id": "Q99513382",
+      "type": "wikidata",
+      "qid": "Q99513382",
+      "controlled_label": "グリーン水素",
+      "wikidata_desc": "再生可能エネルギーなどで製造される低炭素の水素",
+      "confidence": "high",
+      "item_ids": [
+        "2_58"
+      ],
+      "surfaces": [
+        "グリーン水素"
+      ]
+    },
+    {
+      "id": "Q2499580",
+      "type": "wikidata",
+      "qid": "Q2499580",
+      "controlled_label": "水素循環",
+      "wikidata_desc": "生物圏と非生物圏の間で水素が循環する過程",
+      "confidence": "medium",
+      "item_ids": [
+        "2_58"
+      ],
+      "surfaces": [
+        "水素サイクル"
+      ]
+    },
+    {
+      "id": "Q7188",
+      "type": "wikidata",
+      "qid": "Q7188",
+      "controlled_label": "政府",
+      "wikidata_desc": "国家や自治体などの統治を担う機関の総称",
+      "confidence": "high",
+      "item_ids": [
+        "2_45"
+      ],
+      "surfaces": [
+        "政府"
+      ]
+    },
+    {
+      "id": "Q541936",
+      "type": "wikidata",
+      "qid": "Q541936",
+      "controlled_label": "住民参加",
+      "wikidata_desc": "政策決定や計画への市民の参加",
+      "confidence": "medium",
+      "item_ids": [
+        "2_45"
+      ],
+      "surfaces": [
+        "国民参加"
+      ]
+    },
+    {
+      "id": "Q1197264",
+      "type": "wikidata",
+      "qid": "Q1197264",
+      "controlled_label": "経済産業省",
+      "wikidata_desc": "日本の産業・経済政策を所管する中央省庁",
+      "confidence": "high",
+      "item_ids": [
+        "2_48"
+      ],
+      "surfaces": [
+        "経産省"
+      ]
+    },
+    {
+      "id": "Q11693783",
+      "type": "wikidata",
+      "qid": "Q11693783",
+      "controlled_label": "脱炭素化",
+      "wikidata_desc": "経済やエネルギー産業を低炭素へ転換すること",
+      "confidence": "high",
+      "item_ids": [
+        "2_43",
+        "2_59"
+      ],
+      "surfaces": [
+        "脱炭素化",
+        "脱炭素"
+      ]
+    },
+    {
+      "id": "Q877079",
+      "type": "wikidata",
+      "qid": "Q877079",
+      "controlled_label": "核燃料サイクル",
+      "wikidata_desc": "使用済み核燃料の再処理と燃料再利用を含む工程",
+      "confidence": "high",
+      "item_ids": [
+        "2_33"
+      ],
+      "surfaces": [
+        "核燃料サイクル"
+      ]
+    },
+    {
+      "id": "T13",
+      "type": "local",
+      "qid": null,
+      "controlled_label": "原子力発電所の新設",
+      "wikidata_desc": "原子力発電所を新たに建設・増設すること",
+      "confidence": "high",
+      "item_ids": [
+        "2_40"
+      ],
+      "surfaces": [
+        "原発新設・増設"
+      ]
+    },
+    {
+      "id": "Q320389",
+      "type": "wikidata",
+      "qid": "Q320389",
+      "controlled_label": "環境アセスメント",
+      "wikidata_desc": "計画や事業が環境に与える影響を事前に評価する手続き",
+      "confidence": "high",
+      "item_ids": [
+        "2_56"
+      ],
+      "surfaces": [
+        "環境影響の評価"
+      ]
+    },
+    {
+      "id": "Q1774424",
+      "type": "wikidata",
+      "qid": "Q1774424",
+      "controlled_label": "カーボンニュートラル",
+      "wikidata_desc": "温室効果ガスの排出量を吸収・除去で差し引き実質ゼロにすること",
+      "confidence": "high",
+      "item_ids": [
+        "2_51"
+      ],
+      "surfaces": [
+        "カーボンニュートラル"
+      ]
+    },
+    {
+      "id": "T14",
+      "type": "local",
+      "qid": null,
+      "controlled_label": "国民の生命・健康",
+      "wikidata_desc": "憲法上保障される国民の生命と健康に関わる基本的人権",
+      "confidence": "high",
+      "item_ids": [
+        "2_28"
+      ],
+      "surfaces": [
+        "国民の生命・健康"
+      ]
+    },
+    {
+      "id": "Q7944",
+      "type": "wikidata",
+      "qid": "Q7944",
+      "controlled_label": "地震",
+      "wikidata_desc": "地下の岩盤が急激にずれて起こる揺れ",
+      "confidence": "high",
+      "item_ids": [
+        "2_50"
+      ],
+      "surfaces": [
+        "地震"
+      ]
+    },
+    {
+      "id": "Q178706",
+      "type": "wikidata",
+      "qid": "Q178706",
+      "controlled_label": "制度",
+      "wikidata_desc": "社会の行動や運用を定める仕組み",
+      "confidence": "high",
+      "item_ids": [
+        "2_59"
+      ],
+      "surfaces": [
+        "制度"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "source": "Q12705",
+      "target": "Q810924",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_9"
+      ]
+    },
+    {
+      "source": "Q12705",
+      "target": "Q4531977",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_9"
+      ]
+    },
+    {
+      "source": "Q4531977",
+      "target": "Q810924",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_9"
+      ]
+    },
+    {
+      "source": "Q11536219",
+      "target": "Q12705",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_39"
+      ]
+    },
+    {
+      "source": "Q12705",
+      "target": "Q1805337",
+      "type": "co_mention",
+      "weight": 2,
+      "item_ids": [
+        "2_25",
+        "2_14"
+      ]
+    },
+    {
+      "source": "Q17232373",
+      "target": "Q185252",
+      "type": "co_mention",
+      "weight": 2,
+      "item_ids": [
+        "2_49",
+        "2_52"
+      ]
+    },
+    {
+      "source": "Q11448",
+      "target": "Q80877",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_52"
+      ]
+    },
+    {
+      "source": "Q11448",
+      "target": "Q194523",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_52"
+      ]
+    },
+    {
+      "source": "Q11448",
+      "target": "Q17232373",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_52"
+      ]
+    },
+    {
+      "source": "Q11448",
+      "target": "Q134447",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_52"
+      ]
+    },
+    {
+      "source": "Q11448",
+      "target": "Q1620824",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_52"
+      ]
+    },
+    {
+      "source": "Q11448",
+      "target": "Q171178",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_52"
+      ]
+    },
+    {
+      "source": "Q11448",
+      "target": "Q185252",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_52"
+      ]
+    },
+    {
+      "source": "Q11448",
+      "target": "Q186161",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_52"
+      ]
+    },
+    {
+      "source": "Q194523",
+      "target": "Q80877",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_52"
+      ]
+    },
+    {
+      "source": "Q17232373",
+      "target": "Q80877",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_52"
+      ]
+    },
+    {
+      "source": "Q134447",
+      "target": "Q80877",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_52"
+      ]
+    },
+    {
+      "source": "Q1620824",
+      "target": "Q80877",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_52"
+      ]
+    },
+    {
+      "source": "Q171178",
+      "target": "Q80877",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_52"
+      ]
+    },
+    {
+      "source": "Q185252",
+      "target": "Q80877",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_52"
+      ]
+    },
+    {
+      "source": "Q186161",
+      "target": "Q80877",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_52"
+      ]
+    },
+    {
+      "source": "Q17232373",
+      "target": "Q194523",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_52"
+      ]
+    },
+    {
+      "source": "Q134447",
+      "target": "Q194523",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_52"
+      ]
+    },
+    {
+      "source": "Q1620824",
+      "target": "Q194523",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_52"
+      ]
+    },
+    {
+      "source": "Q171178",
+      "target": "Q194523",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_52"
+      ]
+    },
+    {
+      "source": "Q185252",
+      "target": "Q194523",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_52"
+      ]
+    },
+    {
+      "source": "Q186161",
+      "target": "Q194523",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_52"
+      ]
+    },
+    {
+      "source": "Q134447",
+      "target": "Q17232373",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_52"
+      ]
+    },
+    {
+      "source": "Q1620824",
+      "target": "Q17232373",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_52"
+      ]
+    },
+    {
+      "source": "Q171178",
+      "target": "Q17232373",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_52"
+      ]
+    },
+    {
+      "source": "Q17232373",
+      "target": "Q186161",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_52"
+      ]
+    },
+    {
+      "source": "Q134447",
+      "target": "Q1620824",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_52"
+      ]
+    },
+    {
+      "source": "Q134447",
+      "target": "Q171178",
+      "type": "co_mention",
+      "weight": 2,
+      "item_ids": [
+        "2_52",
+        "2_1"
+      ]
+    },
+    {
+      "source": "Q134447",
+      "target": "Q185252",
+      "type": "co_mention",
+      "weight": 2,
+      "item_ids": [
+        "2_52",
+        "2_6"
+      ]
+    },
+    {
+      "source": "Q134447",
+      "target": "Q186161",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_52"
+      ]
+    },
+    {
+      "source": "Q1620824",
+      "target": "Q171178",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_52"
+      ]
+    },
+    {
+      "source": "Q1620824",
+      "target": "Q185252",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_52"
+      ]
+    },
+    {
+      "source": "Q1620824",
+      "target": "Q186161",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_52"
+      ]
+    },
+    {
+      "source": "Q171178",
+      "target": "Q185252",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_52"
+      ]
+    },
+    {
+      "source": "Q171178",
+      "target": "Q186161",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_52"
+      ]
+    },
+    {
+      "source": "Q185252",
+      "target": "Q186161",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_52"
+      ]
+    },
+    {
+      "source": "Q134447",
+      "target": "T1",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_46"
+      ]
+    },
+    {
+      "source": "Q119386673",
+      "target": "Q1941338",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_16"
+      ]
+    },
+    {
+      "source": "Q119386673",
+      "target": "Q1773152",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_16"
+      ]
+    },
+    {
+      "source": "Q1773152",
+      "target": "Q1941338",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_16"
+      ]
+    },
+    {
+      "source": "Q11982303",
+      "target": "Q6558431",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_42"
+      ]
+    },
+    {
+      "source": "Q6558431",
+      "target": "T2",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_42"
+      ]
+    },
+    {
+      "source": "Q6558431",
+      "target": "T3",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_42"
+      ]
+    },
+    {
+      "source": "Q104696754",
+      "target": "Q6558431",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_42"
+      ]
+    },
+    {
+      "source": "Q11982303",
+      "target": "T2",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_42"
+      ]
+    },
+    {
+      "source": "Q11982303",
+      "target": "T3",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_42"
+      ]
+    },
+    {
+      "source": "Q104696754",
+      "target": "Q11982303",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_42"
+      ]
+    },
+    {
+      "source": "T2",
+      "target": "T3",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_42"
+      ]
+    },
+    {
+      "source": "Q104696754",
+      "target": "T2",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_42"
+      ]
+    },
+    {
+      "source": "Q104696754",
+      "target": "T3",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_42"
+      ]
+    },
+    {
+      "source": "Q556",
+      "target": "T4",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_21"
+      ]
+    },
+    {
+      "source": "Q556",
+      "target": "T5",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_21"
+      ]
+    },
+    {
+      "source": "T4",
+      "target": "T5",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_21"
+      ]
+    },
+    {
+      "source": "Q1189820",
+      "target": "Q171178",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_29"
+      ]
+    },
+    {
+      "source": "Q12705",
+      "target": "Q171178",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_29"
+      ]
+    },
+    {
+      "source": "Q1189820",
+      "target": "Q12705",
+      "type": "co_mention",
+      "weight": 4,
+      "item_ids": [
+        "2_29",
+        "2_61",
+        "2_11",
+        "2_44"
+      ]
+    },
+    {
+      "source": "T6",
+      "target": "T7",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_47"
+      ]
+    },
+    {
+      "source": "Q13065634",
+      "target": "Q87075524",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_31"
+      ]
+    },
+    {
+      "source": "Q12705",
+      "target": "Q17232373",
+      "type": "co_mention",
+      "weight": 3,
+      "item_ids": [
+        "2_0",
+        "2_20",
+        "2_40"
+      ]
+    },
+    {
+      "source": "Q1156854",
+      "target": "T8",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_35"
+      ]
+    },
+    {
+      "source": "Q134447",
+      "target": "Q1962383",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_15"
+      ]
+    },
+    {
+      "source": "Q12705",
+      "target": "Q478859",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_4"
+      ]
+    },
+    {
+      "source": "Q1088669",
+      "target": "Q134447",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_41"
+      ]
+    },
+    {
+      "source": "Q134447",
+      "target": "Q1888109",
+      "type": "co_mention",
+      "weight": 2,
+      "item_ids": [
+        "2_55",
+        "2_23"
+      ]
+    },
+    {
+      "source": "Q1156854",
+      "target": "Q134447",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_55"
+      ]
+    },
+    {
+      "source": "Q1156854",
+      "target": "Q1888109",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_55"
+      ]
+    },
+    {
+      "source": "Q167336",
+      "target": "Q59241925",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_12"
+      ]
+    },
+    {
+      "source": "Q1805337",
+      "target": "Q7174",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_54"
+      ]
+    },
+    {
+      "source": "Q1805337",
+      "target": "Q535347",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_54"
+      ]
+    },
+    {
+      "source": "Q535347",
+      "target": "Q7174",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_54"
+      ]
+    },
+    {
+      "source": "Q478859",
+      "target": "T9",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_26"
+      ]
+    },
+    {
+      "source": "Q556",
+      "target": "T9",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_26"
+      ]
+    },
+    {
+      "source": "Q478859",
+      "target": "Q556",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_26"
+      ]
+    },
+    {
+      "source": "Q1156854",
+      "target": "Q948732",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_18"
+      ]
+    },
+    {
+      "source": "Q131363127",
+      "target": "Q17232373",
+      "type": "co_mention",
+      "weight": 2,
+      "item_ids": [
+        "2_10",
+        "2_24"
+      ]
+    },
+    {
+      "source": "Q104493",
+      "target": "Q17232373",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_10"
+      ]
+    },
+    {
+      "source": "Q104493",
+      "target": "Q131363127",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_10"
+      ]
+    },
+    {
+      "source": "Q171178",
+      "target": "Q7886977",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_1"
+      ]
+    },
+    {
+      "source": "Q134447",
+      "target": "Q7886977",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_1"
+      ]
+    },
+    {
+      "source": "Q125928",
+      "target": "Q1805337",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_63"
+      ]
+    },
+    {
+      "source": "Q12147",
+      "target": "Q125928",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_63"
+      ]
+    },
+    {
+      "source": "Q125928",
+      "target": "Q1888109",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_63"
+      ]
+    },
+    {
+      "source": "Q12147",
+      "target": "Q1805337",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_63"
+      ]
+    },
+    {
+      "source": "Q1805337",
+      "target": "Q1888109",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_63"
+      ]
+    },
+    {
+      "source": "Q12147",
+      "target": "Q1888109",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_63"
+      ]
+    },
+    {
+      "source": "Q11290480",
+      "target": "Q12705",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_32"
+      ]
+    },
+    {
+      "source": "Q17232373",
+      "target": "Q1888109",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_57"
+      ]
+    },
+    {
+      "source": "Q12705",
+      "target": "Q12748",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_17"
+      ]
+    },
+    {
+      "source": "Q125928",
+      "target": "T10",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_8"
+      ]
+    },
+    {
+      "source": "Q125928",
+      "target": "Q219416",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_8"
+      ]
+    },
+    {
+      "source": "Q219416",
+      "target": "T10",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_8"
+      ]
+    },
+    {
+      "source": "Q134447",
+      "target": "Q6857873",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_23"
+      ]
+    },
+    {
+      "source": "Q1888109",
+      "target": "Q6857873",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_23"
+      ]
+    },
+    {
+      "source": "Q17946",
+      "target": "T11",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_2"
+      ]
+    },
+    {
+      "source": "Q40231",
+      "target": "T11",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_2"
+      ]
+    },
+    {
+      "source": "Q17946",
+      "target": "Q40231",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_2"
+      ]
+    },
+    {
+      "source": "Q192127",
+      "target": "Q2491694",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_22"
+      ]
+    },
+    {
+      "source": "Q1620824",
+      "target": "T12",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_27"
+      ]
+    },
+    {
+      "source": "Q1274115",
+      "target": "Q1620824",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_27"
+      ]
+    },
+    {
+      "source": "Q1274115",
+      "target": "T12",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_27"
+      ]
+    },
+    {
+      "source": "Q478859",
+      "target": "Q99513382",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_58"
+      ]
+    },
+    {
+      "source": "Q2499580",
+      "target": "Q478859",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_58"
+      ]
+    },
+    {
+      "source": "Q2499580",
+      "target": "Q99513382",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_58"
+      ]
+    },
+    {
+      "source": "Q541936",
+      "target": "Q7188",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_45"
+      ]
+    },
+    {
+      "source": "Q535347",
+      "target": "Q7188",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_45"
+      ]
+    },
+    {
+      "source": "Q1274115",
+      "target": "Q7188",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_45"
+      ]
+    },
+    {
+      "source": "Q535347",
+      "target": "Q541936",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_45"
+      ]
+    },
+    {
+      "source": "Q1274115",
+      "target": "Q541936",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_45"
+      ]
+    },
+    {
+      "source": "Q1274115",
+      "target": "Q535347",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_45"
+      ]
+    },
+    {
+      "source": "Q1197264",
+      "target": "Q1805337",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_48"
+      ]
+    },
+    {
+      "source": "Q11693783",
+      "target": "Q12705",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_43"
+      ]
+    },
+    {
+      "source": "Q17232373",
+      "target": "Q877079",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_33"
+      ]
+    },
+    {
+      "source": "Q17232373",
+      "target": "T13",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_40"
+      ]
+    },
+    {
+      "source": "Q12705",
+      "target": "T13",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_40"
+      ]
+    },
+    {
+      "source": "Q219416",
+      "target": "Q478859",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_56"
+      ]
+    },
+    {
+      "source": "Q320389",
+      "target": "Q478859",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_56"
+      ]
+    },
+    {
+      "source": "Q219416",
+      "target": "Q320389",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_56"
+      ]
+    },
+    {
+      "source": "Q12705",
+      "target": "Q1774424",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_51"
+      ]
+    },
+    {
+      "source": "Q12147",
+      "target": "Q17232373",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_28"
+      ]
+    },
+    {
+      "source": "Q17232373",
+      "target": "T14",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_28"
+      ]
+    },
+    {
+      "source": "Q12147",
+      "target": "T14",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_28"
+      ]
+    },
+    {
+      "source": "Q134447",
+      "target": "Q7944",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_50"
+      ]
+    },
+    {
+      "source": "Q134447",
+      "target": "Q1805337",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_50"
+      ]
+    },
+    {
+      "source": "Q1805337",
+      "target": "Q7944",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_50"
+      ]
+    },
+    {
+      "source": "Q11693783",
+      "target": "Q134447",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_59"
+      ]
+    },
+    {
+      "source": "Q134447",
+      "target": "Q178706",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_59"
+      ]
+    },
+    {
+      "source": "Q11693783",
+      "target": "Q178706",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_59"
+      ]
+    },
+    {
+      "source": "Q104696754",
+      "target": "Q12705",
+      "type": "co_mention",
+      "weight": 1,
+      "item_ids": [
+        "2_3"
+      ]
+    },
+    {
+      "source": "Q12705",
+      "target": "Q1805337",
+      "type": "wikidata_property",
+      "relation_type": "direct",
+      "property_id": "P527",
+      "property_label": "has part",
+      "direction": "b_to_a",
+      "via_qid": "",
+      "via_label": "",
+      "item_id": "2_14"
+    },
+    {
+      "source": "Q12748",
+      "target": "Q12705",
+      "type": "wikidata_property",
+      "relation_type": "shared_ancestor",
+      "property_id": "P279/P31",
+      "property_label": "共通上位クラス/インスタンス",
+      "direction": "symmetric",
+      "via_qid": "Q1522115",
+      "via_label": "エネルギー資源",
+      "item_id": "2_17"
+    },
+    {
+      "source": "Q12705",
+      "target": "Q1805337",
+      "type": "wikidata_property",
+      "relation_type": "direct",
+      "property_id": "P527",
+      "property_label": "has part",
+      "direction": "b_to_a",
+      "via_qid": "",
+      "via_label": "",
+      "item_id": "2_25"
+    },
+    {
+      "source": "Q541936",
+      "target": "Q535347",
+      "type": "wikidata_property",
+      "relation_type": "shared_ancestor",
+      "property_id": "P279/P31",
+      "property_label": "共通上位クラス/インスタンス",
+      "direction": "symmetric",
+      "via_qid": "Q137210792",
+      "via_label": "Concepts related to procedural justice",
+      "item_id": "2_45"
+    },
+    {
+      "source": "Q11448",
+      "target": "Q186161",
+      "type": "wikidata_property",
+      "relation_type": "shared_ancestor",
+      "property_id": "P279/P31",
+      "property_label": "共通上位クラス/インスタンス",
+      "direction": "symmetric",
+      "via_qid": "Q1293220",
+      "via_label": "物理現象",
+      "item_id": "2_52"
+    },
+    {
+      "source": "Q80877",
+      "target": "Q134447",
+      "type": "wikidata_property",
+      "relation_type": "direct",
+      "property_id": "P361",
+      "property_label": "part of",
+      "direction": "a_to_b",
+      "via_qid": "",
+      "via_label": "",
+      "item_id": "2_52"
+    },
+    {
+      "source": "Q80877",
+      "target": "Q134447",
+      "type": "wikidata_property",
+      "relation_type": "direct",
+      "property_id": "P527",
+      "property_label": "has part",
+      "direction": "b_to_a",
+      "via_qid": "",
+      "via_label": "",
+      "item_id": "2_52"
+    },
+    {
+      "source": "Q80877",
+      "target": "Q134447",
+      "type": "wikidata_property",
+      "relation_type": "shared_ancestor",
+      "property_id": "P279/P31",
+      "property_label": "共通上位クラス/インスタンス",
+      "direction": "symmetric",
+      "via_qid": "Q1739545",
+      "via_label": "原子力施設",
+      "item_id": "2_52"
+    }
+  ]
+}

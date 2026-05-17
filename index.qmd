@@ -17,7 +17,7 @@ title: "広聴AI / keyword-curation ワークフロー"
 
 入力は、コメント CSV を広聴AIのレポート生成パイプラインで処理して得た階層クラスタ、argument、embedding などの中間ファイルです。ここから L2 クラスタラベルと takeaway を使って entity linking 候補を作り、人手確認した結果を後続の関係抽出に使います。`keyword-curation` 用の JSON では、この補助文脈を item の `description` として渡します。
 
-成果物は [議論ビューアー](./pair_relation_viewer.html) で、エンティティ間のネットワークやコメントに基づくエンティティ単位・ペア単位の意見要約をブラウズできるようになっています。数が少ないが重要な意見を拾い上げることができているという点で一定の価値があるワークフローを構築できたのではないかと思っています。
+成果物は [議論ビューアー](./dataset/energy-plan-pubcom-sample/pair_relation_viewer.html) で、エンティティ間のネットワークやコメントに基づくエンティティ単位・ペア単位の意見要約をブラウズできるようになっています。数が少ないが重要な意見を拾い上げることができているという点で一定の価値があるワークフローを構築できたのではないかと思っています。
 
 今後、学術的な検証や、評価、このワークフローを実務化や他の研究者が容易に利用できるようにするための工夫などに取り組んでいきたいと考えています。
 
@@ -44,7 +44,7 @@ Web UI から CSV をアップロードする場合は、`id` または `comment
 この実験で使った入力 CSV も、以下の列を持っていました。
 
 - `comment-id`: コメント単位の ID。広聴AIの `relations.csv` で抽出 argument と結び付けられ、`final_result_with_comments.csv` の `comment-id` にも残ります。
-- `comment-body`: 元コメント本文。広聴AIの argument 抽出に使われ、`final_result_with_comments.csv` では `original-comment` として出力されます。このワークフローではそこから `data/comment_texts.json` を生成します。
+- `comment-body`: 元コメント本文。広聴AIの argument 抽出に使われ、`final_result_with_comments.csv` では `original-comment` として出力されます。このワークフローではそこから `dataset/energy-plan-pubcom-sample/comment_texts.json` を生成します。
 - `source`: コメントの由来を表す列。パイプライン直接実行では必須ではありませんが、入力プラグインでは標準的に出力されます。存在する場合、広聴AIの `final_result_with_comments.csv` に残ります。
 - `url`: 元コメントや出典への URL を表す列。パイプライン直接実行では必須ではありませんが、ソースリンク機能を使う場合は必要です。存在する場合、広聴AIの `final_result_with_comments.csv` に残り、設定によっては `hierarchical_result.json` の argument 側にも `url` として入ります。
 - `attribute_...`: コメントに付けたい属性列。列名が `attribute_` で始まるものは、広聴AIの集約段階で属性として扱われます。`final_result_with_comments.csv` には元の列名のまま残り、`hierarchical_result.json` では `attribute_` を外した名前で `arguments[].attributes` に入ります。
@@ -56,23 +56,24 @@ Web UI から CSV をアップロードする場合は、`id` または `comment
 コメント ID、元コメント本文であり、`source` や `attribute_...` は広聴AI由来の補助情報として残しているものです。
 
 このリポジトリのスクリプトは、広聴AIの処理そのものは実行せず、
-`data/` に配置された広聴AIの中間ファイルを読みます。
+`settings.py` の `DEFAULT_DATA_DIR` に指定されたデータセットディレクトリを読みます。
+一時的に別データセットを使う場合は、各スクリプトに `--data-dir dataset/<dataset-name>` を渡します。
 広聴AIをリポジトリ直下で実行した場合、中間ファイルは通常
 `apps/api/broadlistening/pipeline/outputs/` 以下の実行 ID ごとのディレクトリに出力されます。
 
-対象の実行 ID のディレクトリを確認したら、必要な中間ファイルをこのリポジトリの `data/` にコピーします。
+対象の実行 ID のディレクトリを確認したら、必要な中間ファイルをこのリポジトリの `dataset/energy-plan-pubcom-sample/` にコピーします。
 
 ```bash
-cp /path/to/kouchou-ai/apps/api/broadlistening/pipeline/outputs/<run-id>/hierarchical_result.json data/
-cp /path/to/kouchou-ai/apps/api/broadlistening/pipeline/outputs/<run-id>/hierarchical_clusters.csv data/
-cp /path/to/kouchou-ai/apps/api/broadlistening/pipeline/outputs/<run-id>/final_result_with_comments.csv data/
-cp /path/to/kouchou-ai/apps/api/broadlistening/pipeline/outputs/<run-id>/embeddings.pkl data/
+cp /path/to/kouchou-ai/apps/api/broadlistening/pipeline/outputs/<run-id>/hierarchical_result.json dataset/energy-plan-pubcom-sample/
+cp /path/to/kouchou-ai/apps/api/broadlistening/pipeline/outputs/<run-id>/hierarchical_clusters.csv dataset/energy-plan-pubcom-sample/
+cp /path/to/kouchou-ai/apps/api/broadlistening/pipeline/outputs/<run-id>/final_result_with_comments.csv dataset/energy-plan-pubcom-sample/
+cp /path/to/kouchou-ai/apps/api/broadlistening/pipeline/outputs/<run-id>/embeddings.pkl dataset/energy-plan-pubcom-sample/
 ```
 
-- `data/hierarchical_result.json` は、L2 クラスタラベルと takeaway を取り出して entity linking 候補生成に使います。
-- `data/hierarchical_clusters.csv` は、各 argument がどの L1/L2 クラスタに属するかを引くために使います。
-- `data/final_result_with_comments.csv` は、argument と元コメント本文、コメント ID を対応付けるために使います。
-- `data/embeddings.pkl` は、argument をより細かい局所クラスタに分けるために使います。
+- `dataset/energy-plan-pubcom-sample/hierarchical_result.json` は、L2 クラスタラベルと takeaway を取り出して entity linking 候補生成に使います。
+- `dataset/energy-plan-pubcom-sample/hierarchical_clusters.csv` は、各 argument がどの L1/L2 クラスタに属するかを引くために使います。
+- `dataset/energy-plan-pubcom-sample/final_result_with_comments.csv` は、argument と元コメント本文、コメント ID を対応付けるために使います。
+- `dataset/energy-plan-pubcom-sample/embeddings.pkl` は、argument をより細かい局所クラスタに分けるために使います。
 
 ここでいう **L2 クラスタラベル** は、広聴AIがコメントから抽出した argument を
 階層クラスタリングしたときの第 2 階層クラスタにつけられた代表ラベルです。
@@ -82,17 +83,17 @@ cp /path/to/kouchou-ai/apps/api/broadlistening/pipeline/outputs/<run-id>/embeddi
 entity linking 候補抽出と人手確認の両方で参照します。
 
 このリポジトリでは、広聴AIからコピーする上記 4 ファイルに加えて、
-`data/final_result_with_comments.csv` から生成する `data/comment_texts.json` を
+`dataset/energy-plan-pubcom-sample/final_result_with_comments.csv` から生成する `dataset/energy-plan-pubcom-sample/comment_texts.json` を
 Git 管理から除外しています。一方、要約、一部引用した元コメントはデータに含まれています。
 
 ### 1. Entity linking 候補を作る
 
-`scripts/prepare_entity_candidates_no_draft.py` は、`data/hierarchical_result.json` の
+`scripts/prepare_entity_candidates_no_draft.py` は、`dataset/energy-plan-pubcom-sample/hierarchical_result.json` の
 L2 クラスタラベルと takeaway から
 Wikidata にリンクできそうな語句を LLM で抽出し、Wikidata Search API の候補から
 最も適切な QID を選びます。
 
-出力は `data/data.json` です。各 item には L2 クラスタラベルに加えて、広聴AIの takeaway を `description` として含めます。
+出力は `dataset/energy-plan-pubcom-sample/data.json` です。各 item には L2 クラスタラベルに加えて、広聴AIの takeaway を `description` として含めます。
 この時点の結果は自動生成なので、`keyword-curation` で `description` を参照しながら
 entity ID、ラベル、説明、リンク要否を人手確認します。
 
@@ -102,7 +103,7 @@ python scripts/prepare_entity_candidates_no_draft.py
 
 ### 2. Entity 説明を整える
 
-`scripts/refine_entity_descriptions.py` は、キュレーション済み `data/data.json` の
+`scripts/refine_entity_descriptions.py` は、キュレーション済み `dataset/energy-plan-pubcom-sample/data.json` の
 entity description を日本語で短く整えます。
 
 これは後続のグラフ表示や LLM による意見抽出で、エンティティの意味を安定させるための工程です。
@@ -116,8 +117,8 @@ python scripts/refine_entity_descriptions.py --only-weak
 `scripts/build_argument_microclusters.py` は、argument embedding に Ward 法を適用し、
 近い argument を局所クラスタにまとめます。ここでいう局所クラスタは、全体の階層クラスタとは別に、意味的に近い argument をさらに細かくまとめた小クラスタです。広聴AIの argument はコメントごとに抽出されるため、コメントが似ていた場合、意味的に重複した argument が多数抽出されます。今回扱ったパブコメデータは特にその点が問題になったためこのプロセスを挟んでいます。
 
-入力は `data/embeddings.pkl` と `data/hierarchical_clusters.csv` です。
-出力は `data/argument_microclusters_t0.7.csv` です。各局所クラスタにはセントロイド argument が付き、
+入力は `dataset/energy-plan-pubcom-sample/embeddings.pkl` と `dataset/energy-plan-pubcom-sample/hierarchical_clusters.csv` です。
+出力は `dataset/energy-plan-pubcom-sample/argument_microclusters_t0.7.csv` です。各局所クラスタにはセントロイド argument が付き、
 後続工程で代表的な論点を取り出しやすくします。
 
 ```bash
@@ -129,12 +130,12 @@ python scripts/build_argument_microclusters.py --threshold 0.7
 `scripts/build_cluster_comment_index.py` は、argument、コメント ID、階層クラスタ、
 局所クラスタの対応をまとめます。
 
-入力は `data/final_result_with_comments.csv`、`data/hierarchical_clusters.csv`、
-`data/argument_microclusters_t0.7.csv` です。
+入力は `dataset/energy-plan-pubcom-sample/final_result_with_comments.csv`、`dataset/energy-plan-pubcom-sample/hierarchical_clusters.csv`、
+`dataset/energy-plan-pubcom-sample/argument_microclusters_t0.7.csv` です。
 出力は次の 2 つです。
 
-- `data/cluster_comment_index.csv`: 公開・分析用の索引
-- `data/comment_texts.json`: コメント本文のローカル参照用ファイル
+- `dataset/energy-plan-pubcom-sample/cluster_comment_index.csv`: 公開・分析用の索引
+- `dataset/energy-plan-pubcom-sample/comment_texts.json`: コメント本文のローカル参照用ファイル
 
 ```bash
 python scripts/build_cluster_comment_index.py
@@ -147,8 +148,8 @@ Wikidata の `P31`、`P279`、`P361`、`P527` などを調べ、直接関係や�
 
 出力は次の 2 つです。
 
-- `data/property_paths.tsv`: 発見した関係
-- `data/entity_props_cache.json`: Wikidata API 結果のキャッシュ
+- `dataset/energy-plan-pubcom-sample/property_paths.tsv`: 発見した関係
+- `dataset/energy-plan-pubcom-sample/entity_props_cache.json`: Wikidata API 結果のキャッシュ
 
 ```bash
 python scripts/discover_property_paths.py
@@ -156,7 +157,7 @@ python scripts/discover_property_paths.py
 
 ### 6. Entity graph を作る
 
-`scripts/build_entity_graph.py` は、`data/data.json` と `data/property_paths.tsv` から
+`scripts/build_entity_graph.py` は、`dataset/energy-plan-pubcom-sample/data.json` と `dataset/energy-plan-pubcom-sample/property_paths.tsv` から
 エンティティ中心のグラフを作ります。ここでのノードは、`keyword-curation` で確認した
 `entity_id` 単位の統制済みエンティティです。同じエンティティが複数の L2 クラスタに現れた場合は、
 その `item_id` や表記ゆれをノード側に集約します。
@@ -169,7 +170,7 @@ python scripts/discover_property_paths.py
 この段階のエッジは、コメント本文を読んで説明した関係ではなく、共起と Wikidata に基づく構造的な手がかりです。
 後続のペア関係抽出では、この `co_mention` の重みが説明対象ペアの選定に使われます。
 
-出力は `data/entity_graph.json` です。
+出力は `dataset/energy-plan-pubcom-sample/entity_graph.json` です。
 
 ```bash
 python scripts/build_entity_graph.py
@@ -188,7 +189,7 @@ python scripts/build_entity_graph.py
 現在の一覧はエネルギー政策コメントを想定した作業用の分類なので、対象データや分析目的が変わる場合はここを差し替える余地があります。
 これはビューアーでそのまま関係タイプとして表示するための確定情報ではなく、後続で説明対象ペアを選ぶための LLM 由来の手がかりとして使います。
 
-入力には `data/comment_texts.json` が必要です。出力は `data/entity_opinions.json` です。
+入力には `dataset/energy-plan-pubcom-sample/comment_texts.json` が必要です。出力は `dataset/energy-plan-pubcom-sample/entity_opinions.json` です。
 
 ```bash
 python scripts/extract_entity_opinions.py --resume
@@ -196,8 +197,8 @@ python scripts/extract_entity_opinions.py --resume
 
 ### 8. ペア関係を抽出する
 
-`scripts/extract_pair_relations.py` は、`data/entity_opinions.json` と
-`data/entity_graph.json` を使ってスコアの高いエンティティペアを選び、
+`scripts/extract_pair_relations.py` は、`dataset/energy-plan-pubcom-sample/entity_opinions.json` と
+`dataset/energy-plan-pubcom-sample/entity_graph.json` を使ってスコアの高いエンティティペアを選び、
 ペア単位の関係説明を LLM で作ります。
 
 ペア選定では、7. で抽出した `relations` の件数、双方向に関係の手がかりがあるかどうか、
@@ -206,9 +207,9 @@ python scripts/extract_entity_opinions.py --resume
 
 説明生成そのものでは、`relations` の関係タイプを直接プロンプトに渡すのではなく、
 選ばれた 2 つのエンティティと、それらが共通して現れる L2 クラスタのコメント（共通クラスタがなければ両者の関連コメントの和集合）を LLM に渡します。
-そのため `data/pair_relations.json` に入る説明は、ペア選定用の手がかりではなく、コメント本文に基づいて改めて生成された関係説明です。
+そのため `dataset/energy-plan-pubcom-sample/pair_relations.json` に入る説明は、ペア選定用の手がかりではなく、コメント本文に基づいて改めて生成された関係説明です。
 
-出力は `data/pair_relations.json` です。
+出力は `dataset/energy-plan-pubcom-sample/pair_relations.json` です。
 
 ```bash
 python scripts/extract_pair_relations.py --resume
@@ -216,10 +217,10 @@ python scripts/extract_pair_relations.py --resume
 
 ### 9. 議論ビューアーを生成する
 
-`scripts/build_pair_relation_viewer.py` は、`data/pair_relations.json` と
-`data/entity_opinions.json` をブラウザで読むための静的 HTML を生成します。
+`scripts/build_pair_relation_viewer.py` は、`dataset/energy-plan-pubcom-sample/pair_relations.json` と
+`dataset/energy-plan-pubcom-sample/entity_opinions.json` をブラウザで読むための静的 HTML を生成します。
 
-出力は `pair_relation_viewer.html` です。
+出力は `dataset/energy-plan-pubcom-sample/pair_relation_viewer.html` です。
 
 ```bash
 python scripts/build_pair_relation_viewer.py

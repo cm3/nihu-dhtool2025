@@ -29,7 +29,8 @@ from pathlib import Path
 from openai import OpenAI
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_DATA_JSON = ROOT / "data/data.json"
+sys.path.insert(0, str(ROOT))
+from settings import DEFAULT_DATA_DIR, LLM_MODEL  # noqa: E402
 
 SYSTEM_PROMPT = """\
 あなたは、エネルギー政策コメント分析用の entity 辞書を整える編集者です。
@@ -55,11 +56,12 @@ SYSTEM_PROMPT = """\
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
+    parser.add_argument("--data-dir", type=Path, default=None)
     parser.add_argument(
         "--data-json",
         type=Path,
-        default=DEFAULT_DATA_JSON,
-        help="Input curated data.json path",
+        default=None,
+        help="Input curated data.json path (default: --data-dir/data.json)",
     )
     parser.add_argument(
         "--output-json",
@@ -69,7 +71,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--model",
-        default="gpt-5.4-mini",
+        default=None,
         help="OpenAI model name",
     )
     parser.add_argument(
@@ -197,6 +199,9 @@ def call_llm(
 
 def main() -> None:
     cli = parse_args()
+    cli.data_dir = cli.data_dir or DEFAULT_DATA_DIR
+    cli.model = cli.model or LLM_MODEL
+    cli.data_json = cli.data_json or cli.data_dir / "data.json"
     output_json = cli.output_json or cli.data_json
 
     api_key = os.environ.get("OPENAI_API_KEY")

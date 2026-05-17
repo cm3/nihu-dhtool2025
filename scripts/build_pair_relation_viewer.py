@@ -13,11 +13,11 @@ import argparse
 import json
 import os
 from pathlib import Path
+import sys
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_PAIRS_JSON = ROOT / "data/pair_relations.json"
-DEFAULT_OPINIONS_JSON = ROOT / "data/entity_opinions.json"
-DEFAULT_OUTPUT_HTML = ROOT / "pair_relation_viewer.html"
+sys.path.insert(0, str(ROOT))
+from settings import DEFAULT_DATA_DIR  # noqa: E402
 
 SENTIMENT_COLOR = {
     "positive": "#4ade80",
@@ -36,10 +36,15 @@ def relative_url(from_path: Path, to_path: Path) -> str:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--pairs-json", type=Path, default=DEFAULT_PAIRS_JSON)
-    parser.add_argument("--opinions-json", type=Path, default=DEFAULT_OPINIONS_JSON)
-    parser.add_argument("--output-html", type=Path, default=DEFAULT_OUTPUT_HTML)
+    parser.add_argument("--data-dir", type=Path, default=None)
+    parser.add_argument("--pairs-json", type=Path, default=None)
+    parser.add_argument("--opinions-json", type=Path, default=None)
+    parser.add_argument("--output-html", type=Path, default=None)
     cli = parser.parse_args()
+    cli.data_dir = cli.data_dir or DEFAULT_DATA_DIR
+    cli.pairs_json = cli.pairs_json or cli.data_dir / "pair_relations.json"
+    cli.opinions_json = cli.opinions_json or cli.data_dir / "entity_opinions.json"
+    cli.output_html = cli.output_html or cli.data_dir / "pair_relation_viewer.html"
 
     pairs_url = relative_url(cli.output_html, cli.pairs_json)
     opinions_url = relative_url(cli.output_html, cli.opinions_json)
